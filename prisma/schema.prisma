@@ -1,0 +1,705 @@
+// TechVerse Academy - Complete Prisma Schema
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String    @id @default(cuid())
+  email         String    @unique
+  passwordHash  String?
+  name          String?
+  emailVerified DateTime?
+  image         String?
+  role          String    @default("learner")
+  isActive      Boolean   @default(true)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  profile            UserProfile?
+  preferences        UserPreferences?
+  onboardingResponse OnboardingResponse?
+  enrollments        LearningEnrollment[]
+  lessonProgress     LessonProgress[]
+  chapterProgress    ChapterProgress[]
+  chapterCompletions ChapterCompletion[]
+  certificates       Certificate[]
+  assessmentAttempts AssessmentAttempt[]
+  projectSubmissions ProjectSubmission[]
+  portfolio          Portfolio?
+  notes              PersonalNote[]
+  bookmarks          Bookmark[]
+  notifications      Notification[]
+  aiConversations    AiConversation[]
+  aiUsageRecords     AiUsageRecord[]
+  actorAuditLogs     AuditLog[]
+  subscriptions      Subscription[]
+  orgMemberships     OrganizationMember[]
+  sessions           Session[]
+  accounts           Account[]
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refreshToken      String?
+  accessToken       String?
+  expiresAt         Int?
+  tokenType         String?
+  scope             String?
+  idToken           String?
+  sessionState      String?
+  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+  @@unique([identifier, token])
+}
+
+model UserProfile {
+  id               String  @id @default(cuid())
+  userId           String  @unique
+  displayName      String?
+  certificateName  String?
+  bio              String?
+  location         String?
+  website          String?
+  githubUrl        String?
+  linkedinUrl      String?
+  avatarUrl        String?
+  experienceLevel  String?
+  preferredLanguage String @default("en")
+  user             User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model UserPreferences {
+  id                  String  @id @default(cuid())
+  userId              String  @unique
+  theme               String  @default("system")
+  emailNotifications  Boolean @default(true)
+  lessonReminders     Boolean @default(true)
+  weeklyDigest        Boolean @default(true)
+  studyTimeGoal       Int     @default(30)
+  preferredDifficulty String  @default("adaptive")
+  user                User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model OnboardingResponse {
+  id                  String    @id @default(cuid())
+  userId              String    @unique
+  learningGoals       String    @default("[]")
+  experienceLevel     String    @default("beginner")
+  knownTechnologies   String    @default("[]")
+  preferredActivities String    @default("[]")
+  learningPreferences String    @default("{}")
+  equipmentInfo       String?
+  recommendations     String?
+  completedAt         DateTime?
+  createdAt           DateTime  @default(now())
+  updatedAt           DateTime  @updatedAt
+  user                User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model PathwayCategory {
+  id          String            @id @default(cuid())
+  name        String            @unique
+  slug        String            @unique
+  description String?
+  icon        String?
+  sortOrder   Int               @default(0)
+  createdAt   DateTime          @default(now())
+  pathways    LearningPathway[]
+}
+
+model LearningPathway {
+  id                   String               @id @default(cuid())
+  name                 String
+  slug                 String               @unique
+  shortDescription     String
+  detailedDescription  String
+  categoryId           String
+  difficultyLevel      String               @default("beginner")
+  prerequisites        String               @default("[]")
+  recommendedKnowledge String               @default("")
+  learningOutcomes     String               @default("[]")
+  technologyStack      String               @default("[]")
+  careerApplications   String               @default("[]")
+  estimatedDuration    String               @default("40 hours")
+  totalChapters        Int                  @default(0)
+  publishedChapters    Int                  @default(0)
+  status               String               @default("draft")
+  isFeatured           Boolean              @default(false)
+  thumbnailUrl         String?
+  iconName             String?
+  curriculumVersion    String               @default("1.0.0")
+  createdAt            DateTime             @default(now())
+  updatedAt            DateTime             @updatedAt
+  category             PathwayCategory      @relation(fields: [categoryId], references: [id])
+  modules              PathwayModule[]
+  enrollments          LearningEnrollment[]
+  certificates         Certificate[]
+}
+
+model PathwayModule {
+  id          String          @id @default(cuid())
+  pathwayId   String
+  name        String
+  slug        String
+  description String?
+  sortOrder   Int             @default(0)
+  createdAt   DateTime        @default(now())
+  pathway     LearningPathway @relation(fields: [pathwayId], references: [id], onDelete: Cascade)
+  chapters    Chapter[]
+  @@unique([pathwayId, slug])
+}
+
+model Chapter {
+  id                     String                  @id @default(cuid())
+  moduleId               String
+  title                  String
+  slug                   String
+  description            String
+  learningObjectives     String                  @default("[]")
+  prerequisites          String                  @default("[]")
+  estimatedTime          Int                     @default(30)
+  difficultyLevel        String                  @default("beginner")
+  sortOrder              Int                     @default(0)
+  status                 String                  @default("draft")
+  curriculumVersion      String                  @default("1.0.0")
+  references             String                  @default("[]")
+  createdAt              DateTime                @default(now())
+  updatedAt              DateTime                @updatedAt
+  module                 PathwayModule           @relation(fields: [moduleId], references: [id], onDelete: Cascade)
+  lessons                Lesson[]
+  assessments            Assessment[]
+  exercises              Exercise[]
+  projects               Project[]
+  completionRequirements CompletionRequirement[]
+  chapterProgress        ChapterProgress[]
+  chapterCompletions     ChapterCompletion[]
+  certificates           Certificate[]
+  @@unique([moduleId, slug])
+}
+
+model Lesson {
+  id            String           @id @default(cuid())
+  chapterId     String
+  title         String
+  slug          String
+  content       String
+  contentType   String           @default("markdown")
+  sortOrder     Int              @default(0)
+  estimatedTime Int              @default(10)
+  isRequired    Boolean          @default(true)
+  status        String           @default("draft")
+  createdAt     DateTime         @default(now())
+  updatedAt     DateTime         @updatedAt
+  chapter       Chapter          @relation(fields: [chapterId], references: [id], onDelete: Cascade)
+  resources     LessonResource[]
+  progress      LessonProgress[]
+  @@unique([chapterId, slug])
+}
+
+model LessonResource {
+  id        String   @id @default(cuid())
+  lessonId  String
+  title     String
+  type      String
+  url       String?
+  content   String?
+  sortOrder Int      @default(0)
+  createdAt DateTime @default(now())
+  lesson    Lesson   @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+}
+
+model Exercise {
+  id          String   @id @default(cuid())
+  chapterId   String
+  title       String
+  description String
+  type        String
+  difficulty  String   @default("beginner")
+  starterCode String?
+  solution    String?
+  hints       String   @default("[]")
+  testCases   String   @default("[]")
+  sortOrder   Int      @default(0)
+  createdAt   DateTime @default(now())
+  chapter     Chapter  @relation(fields: [chapterId], references: [id], onDelete: Cascade)
+}
+
+model Assessment {
+  id               String               @id @default(cuid())
+  chapterId        String
+  title            String
+  description      String?
+  passingScore     Int                  @default(80)
+  maxAttempts      Int                  @default(3)
+  timeLimitMin     Int?
+  retryDelayHours  Int                  @default(0)
+  showFeedback     Boolean              @default(true)
+  shuffleQuestions Boolean              @default(false)
+  status           String               @default("draft")
+  createdAt        DateTime             @default(now())
+  updatedAt        DateTime             @updatedAt
+  chapter          Chapter              @relation(fields: [chapterId], references: [id], onDelete: Cascade)
+  questions        AssessmentQuestion[]
+  attempts         AssessmentAttempt[]
+}
+
+model AssessmentQuestion {
+  id           String               @id @default(cuid())
+  assessmentId String
+  questionText String
+  questionType String
+  options      String               @default("[]")
+  correctAnswer String?
+  explanation  String?
+  difficulty   String               @default("medium")
+  points       Int                  @default(1)
+  sortOrder    Int                  @default(0)
+  createdAt    DateTime             @default(now())
+  assessment   Assessment           @relation(fields: [assessmentId], references: [id], onDelete: Cascade)
+  responses    AssessmentResponse[]
+}
+
+model AssessmentAttempt {
+  id           String               @id @default(cuid())
+  userId       String
+  assessmentId String
+  score        Int                  @default(0)
+  maxScore     Int                  @default(0)
+  percentage   Float                @default(0)
+  passed       Boolean              @default(false)
+  startedAt    DateTime             @default(now())
+  completedAt  DateTime?
+  timeSpent    Int                  @default(0)
+  user         User                 @relation(fields: [userId], references: [id], onDelete: Cascade)
+  assessment   Assessment           @relation(fields: [assessmentId], references: [id], onDelete: Cascade)
+  responses    AssessmentResponse[]
+}
+
+model AssessmentResponse {
+  id         String             @id @default(cuid())
+  attemptId  String
+  questionId String
+  answer     String
+  isCorrect  Boolean            @default(false)
+  points     Int                @default(0)
+  createdAt  DateTime           @default(now())
+  attempt    AssessmentAttempt   @relation(fields: [attemptId], references: [id], onDelete: Cascade)
+  question   AssessmentQuestion @relation(fields: [questionId], references: [id], onDelete: Cascade)
+}
+
+model LearningEnrollment {
+  id          String          @id @default(cuid())
+  userId      String
+  pathwayId   String
+  status      String          @default("active")
+  enrolledAt  DateTime        @default(now())
+  completedAt DateTime?
+  user        User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  pathway     LearningPathway @relation(fields: [pathwayId], references: [id], onDelete: Cascade)
+  @@unique([userId, pathwayId])
+}
+
+model LessonProgress {
+  id          String    @id @default(cuid())
+  userId      String
+  lessonId    String
+  status      String    @default("not_started")
+  startedAt   DateTime  @default(now())
+  completedAt DateTime?
+  timeSpent   Int       @default(0)
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  lesson      Lesson    @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+  @@unique([userId, lessonId])
+}
+
+model ChapterProgress {
+  id         String   @id @default(cuid())
+  userId     String
+  chapterId  String
+  status     String   @default("not_started")
+  percentage Float    @default(0)
+  startedAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  chapter    Chapter  @relation(fields: [chapterId], references: [id], onDelete: Cascade)
+  @@unique([userId, chapterId])
+}
+
+model CompletionRequirement {
+  id          String  @id @default(cuid())
+  chapterId   String
+  type        String
+  targetId    String?
+  isRequired  Boolean @default(true)
+  description String?
+  chapter     Chapter @relation(fields: [chapterId], references: [id], onDelete: Cascade)
+}
+
+model ChapterCompletion {
+  id                String   @id @default(cuid())
+  userId            String
+  chapterId         String
+  curriculumVersion String
+  completedAt       DateTime @default(now())
+  verifiedAt        DateTime @default(now())
+  verificationData  String   @default("{}")
+  user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  chapter           Chapter  @relation(fields: [chapterId], references: [id], onDelete: Cascade)
+  @@unique([userId, chapterId, curriculumVersion])
+}
+
+model CertificateTemplate {
+  id           String        @id @default(cuid())
+  name         String
+  description  String?
+  templateData String
+  isDefault    Boolean       @default(false)
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  certificates Certificate[]
+}
+
+model Certificate {
+  id                     String                    @id @default(cuid())
+  certificateNumber      String                    @unique
+  userId                 String
+  chapterId              String
+  pathwayId              String
+  templateId             String?
+  recipientName          String
+  chapterTitle           String
+  pathwayName            String
+  issueDate              DateTime                  @default(now())
+  curriculumVersion      String
+  status                 String                    @default("issued")
+  revokedAt              DateTime?
+  revokedReason          String?
+  pdfUrl                 String?
+  pdfGeneratedAt         DateTime?
+  pdfError               String?
+  verificationUrl        String?
+  metadata               String                    @default("{}")
+  createdAt              DateTime                  @default(now())
+  updatedAt              DateTime                  @updatedAt
+  user                   User                      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  chapter                Chapter                   @relation(fields: [chapterId], references: [id])
+  pathway                LearningPathway           @relation(fields: [pathwayId], references: [id])
+  template               CertificateTemplate?      @relation(fields: [templateId], references: [id])
+  verificationEvents     CertificateVerification[]
+}
+
+model CertificateVerification {
+  id            String      @id @default(cuid())
+  certificateId String
+  verifiedAt    DateTime    @default(now())
+  ipAddress     String?
+  userAgent     String?
+  result        String
+  certificate   Certificate @relation(fields: [certificateId], references: [id], onDelete: Cascade)
+}
+
+model Project {
+  id                     String              @id @default(cuid())
+  chapterId              String?
+  title                  String
+  description            String
+  difficulty             String              @default("beginner")
+  category               String              @default("exercise")
+  learningObjectives     String              @default("[]")
+  requirements           String              @default("[]")
+  techRequirements       String              @default("[]")
+  architecture           String?
+  milestones             String              @default("[]")
+  acceptanceCriteria     String              @default("[]")
+  testingRequirements    String              @default("[]")
+  submissionInstructions String?
+  evaluationRubric       String              @default("[]")
+  extensionTasks         String              @default("[]")
+  sortOrder              Int                 @default(0)
+  status                 String              @default("draft")
+  createdAt              DateTime            @default(now())
+  updatedAt              DateTime            @updatedAt
+  chapter                Chapter?            @relation(fields: [chapterId], references: [id], onDelete: SetNull)
+  submissions            ProjectSubmission[]
+}
+
+model ProjectSubmission {
+  id            String          @id @default(cuid())
+  userId        String
+  projectId     String
+  repositoryUrl String?
+  liveUrl       String?
+  description   String?
+  screenshots   String          @default("[]")
+  status        String          @default("submitted")
+  submittedAt   DateTime        @default(now())
+  reviewedAt    DateTime?
+  user          User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  project       Project         @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  reviews       ProjectReview[]
+}
+
+model ProjectReview {
+  id           String            @id @default(cuid())
+  submissionId String
+  reviewerId   String?
+  score        Int?
+  feedback     String?
+  status       String            @default("pending")
+  reviewedAt   DateTime          @default(now())
+  submission   ProjectSubmission @relation(fields: [submissionId], references: [id], onDelete: Cascade)
+}
+
+model Portfolio {
+  id        String             @id @default(cuid())
+  userId    String             @unique
+  bio       String?
+  isPublic  Boolean            @default(false)
+  createdAt DateTime           @default(now())
+  updatedAt DateTime           @updatedAt
+  user      User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  projects  PortfolioProject[]
+}
+
+model PortfolioProject {
+  id               String    @id @default(cuid())
+  portfolioId      String
+  title            String
+  description      String?
+  technologies     String    @default("[]")
+  category         String?
+  repositoryUrl    String?
+  liveUrl          String?
+  screenshotUrls   String    @default("[]")
+  learningOutcomes String    @default("[]")
+  completedAt      DateTime?
+  isPublic         Boolean   @default(true)
+  sortOrder        Int       @default(0)
+  createdAt        DateTime  @default(now())
+  portfolio        Portfolio @relation(fields: [portfolioId], references: [id], onDelete: Cascade)
+}
+
+model PersonalNote {
+  id        String   @id @default(cuid())
+  userId    String
+  pathwayId String?
+  chapterId String?
+  lessonId  String?
+  title     String?
+  content   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Bookmark {
+  id         String   @id @default(cuid())
+  userId     String
+  targetType String
+  targetId   String
+  title      String?
+  createdAt  DateTime @default(now())
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  @@unique([userId, targetType, targetId])
+}
+
+model Notification {
+  id        String    @id @default(cuid())
+  userId    String
+  type      String
+  title     String
+  message   String
+  data      String    @default("{}")
+  isRead    Boolean   @default(false)
+  readAt    DateTime?
+  createdAt DateTime  @default(now())
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model AiConversation {
+  id        String      @id @default(cuid())
+  userId    String
+  context   String      @default("{}")
+  title     String?
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+  user      User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  messages  AiMessage[]
+}
+
+model AiMessage {
+  id             String         @id @default(cuid())
+  conversationId String
+  role           String
+  content        String
+  tokenCount     Int            @default(0)
+  createdAt      DateTime       @default(now())
+  conversation   AiConversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+}
+
+model AiUsageRecord {
+  id            String   @id @default(cuid())
+  userId        String
+  provider      String
+  model         String
+  inputTokens   Int      @default(0)
+  outputTokens  Int      @default(0)
+  estimatedCost Float    @default(0)
+  createdAt     DateTime @default(now())
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Organization {
+  id            String               @id @default(cuid())
+  name          String
+  slug          String               @unique
+  description   String?
+  logoUrl       String?
+  website       String?
+  isActive      Boolean              @default(true)
+  createdAt     DateTime             @default(now())
+  updatedAt     DateTime             @updatedAt
+  members       OrganizationMember[]
+  learnerGroups LearnerGroup[]
+}
+
+model OrganizationMember {
+  id             String       @id @default(cuid())
+  organizationId String
+  userId         String
+  role           String       @default("member")
+  joinedAt       DateTime     @default(now())
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  user           User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  @@unique([organizationId, userId])
+}
+
+model LearnerGroup {
+  id             String       @id @default(cuid())
+  organizationId String
+  name           String
+  description    String?
+  createdAt      DateTime     @default(now())
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+}
+
+model ProductPlan {
+  id            String            @id @default(cuid())
+  name          String
+  slug          String            @unique
+  description   String?
+  priceMonthly  Float             @default(0)
+  priceYearly   Float             @default(0)
+  currency      String            @default("USD")
+  features      String            @default("[]")
+  limits        String            @default("{}")
+  isActive      Boolean           @default(true)
+  sortOrder     Int               @default(0)
+  createdAt     DateTime          @default(now())
+  updatedAt     DateTime          @updatedAt
+  entitlements  PlanEntitlement[]
+  subscriptions Subscription[]
+}
+
+model PlanEntitlement {
+  id      String      @id @default(cuid())
+  planId  String
+  feature String
+  value   String      @default("true")
+  plan    ProductPlan @relation(fields: [planId], references: [id], onDelete: Cascade)
+  @@unique([planId, feature])
+}
+
+model Subscription {
+  id                 String         @id @default(cuid())
+  userId             String
+  planId             String
+  status             String         @default("active")
+  externalId         String?
+  currentPeriodStart DateTime       @default(now())
+  currentPeriodEnd   DateTime?
+  cancelledAt        DateTime?
+  createdAt          DateTime       @default(now())
+  updatedAt          DateTime       @updatedAt
+  user               User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  plan               ProductPlan    @relation(fields: [planId], references: [id])
+  events             BillingEvent[]
+}
+
+model BillingEvent {
+  id             String       @id @default(cuid())
+  subscriptionId String
+  type           String
+  amount         Float        @default(0)
+  currency       String       @default("USD")
+  externalId     String?
+  data           String       @default("{}")
+  processedAt    DateTime     @default(now())
+  subscription   Subscription @relation(fields: [subscriptionId], references: [id], onDelete: Cascade)
+}
+
+model AuditLog {
+  id         String   @id @default(cuid())
+  actorId    String
+  action     String
+  resource   String
+  resourceId String?
+  metadata   String   @default("{}")
+  ipAddress  String?
+  createdAt  DateTime @default(now())
+  actor      User     @relation(fields: [actorId], references: [id])
+}
+
+model ContentVersion {
+  id         String   @id @default(cuid())
+  entityType String
+  entityId   String
+  version    String
+  content    String
+  changedBy  String?
+  createdAt  DateTime @default(now())
+}
+
+model CurriculumImportJob {
+  id          String                  @id @default(cuid())
+  pathwayId   String?
+  status      String                  @default("pending")
+  sourceData  String?
+  result      String?
+  startedAt   DateTime?
+  completedAt DateTime?
+  createdAt   DateTime                @default(now())
+  errors      CurriculumImportError[]
+}
+
+model CurriculumImportError {
+  id        String              @id @default(cuid())
+  jobId     String
+  message   String
+  data      String?
+  createdAt DateTime            @default(now())
+  job       CurriculumImportJob @relation(fields: [jobId], references: [id], onDelete: Cascade)
+}

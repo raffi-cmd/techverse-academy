@@ -1,0 +1,209 @@
+%PDF-1.4
+1 0 obj
+<<
+  /Type /Catalog
+  /Pages 2 0 R
+>>
+endobj
+
+2 0 obj
+<<
+  /Type /Pages
+  /Kids [3 0 R]
+  /Count 1
+>>
+endobj
+
+3 0 obj
+<<
+  /Type /Page
+  /Parent 2 0 R
+  /MediaBox [0 0 841.89 595.28]
+  /Contents 4 0 R
+  /Resources <<
+    /Font <<
+      /F1 <<
+        /Type /Font
+        /Subtype /Type1
+        /BaseFont /Helvetica
+      >>
+      /F2 <<
+        /Type /Font
+        /Subtype /Type1
+        /BaseFont /Helvetica-Bold
+      >>
+    >>
+  >>
+>>
+endobj
+
+4 0 obj
+<<
+  /Length 2380
+>>
+stream
+q
+% Background: Deep Navy (#080B14)
+0.031 0.043 0.078 rg
+0 0 841.89 595.28 re f
+
+% Inner Border: Subtle Dark Border
+0.12 0.16 0.28 RG
+2 w
+20 20 801.89 555.28 re S
+
+% Gold Border: #D4AF37 (0.831, 0.686, 0.216)
+0.831 0.686 0.216 RG
+1.5 w
+35 35 771.89 525.28 re S
+
+% Corner decorative gold accents
+4 w
+30 30 m 50 30 l S
+30 30 m 30 50 l S
+811.89 30 m 791.89 30 l S
+811.89 30 m 811.89 50 l S
+30 565.28 m 50 565.28 l S
+30 565.28 m 30 545.28 l S
+811.89 565.28 m 791.89 565.28 l S
+811.89 565.28 m 811.89 545.28 l S
+
+% Brand Header: TECHVERSE ACADEMY
+BT
+/F1 14 Tf
+0.831 0.686 0.216 rg
+340.945 520.28 Td
+(TECHVERSE ACADEMY) Tj
+ET
+
+% Decorative Gold Line below brand
+0.831 0.686 0.216 RG
+1 w
+360.945 510.28 m 480.945 510.28 l S
+
+% Main Title: CERTIFICATE OF COMPLETION
+BT
+/F2 26 Tf
+1 1 1 rg
+210.945 465.28 Td
+(CERTIFICATE OF COMPLETION) Tj
+ET
+
+% Subtitle: PROUDLY PRESENTED TO
+BT
+/F1 11 Tf
+0.6 0.65 0.75 rg
+345.945 430.28 Td
+(PROUDLY PRESENTED TO) Tj
+ET
+
+% Recipient Name (Large, Gold/White)
+BT
+/F2 30 Tf
+0.831 0.686 0.216 rg
+301.945 380.28 Td
+(ALEX CANDIDATE) Tj
+ET
+
+% Name underline
+0.831 0.686 0.216 RG
+0.75 w
+270.945 370.28 m 570.9449999999999 370.28 l S
+
+% Description
+BT
+/F1 12 Tf
+0.8 0.85 0.9 rg
+190.945 330.28 Td
+(For successfully mastering all required curriculum chapters, practical tasks, and assessments in:) Tj
+ET
+
+% Chapter Title
+BT
+/F2 18 Tf
+1 1 1 rg
+30.944999999999993 290.28 Td
+(Computer and IT Fundamentals: Chapter 1 - Orientation & Foundations \(Part 1\)) Tj
+ET
+
+% Pathway Name Badge
+BT
+/F1 13 Tf
+0.831 0.686 0.216 rg
+308.945 260.28 Td
+([ Computer and IT Fundamentals ]) Tj
+ET
+
+% Footer Divider
+0.15 0.2 0.35 RG
+1 w
+60 135 m 781.89 135 l S
+
+% Footer Left: Date & Certificate ID
+BT
+/F1 10 Tf
+0.5 0.55 0.65 rg
+70 105 Td
+(ISSUE DATE:) Tj
+0 -15 Td
+(CERTIFICATE ID:) Tj
+0 -15 Td
+(VERIFICATION:) Tj
+ET
+
+BT
+/F1 10 Tf
+0.9 0.9 0.9 rg
+175 105 Td
+(2026-10-24) Tj
+0 -15 Td
+(TV-2026-C33089-801C83) Tj
+0 -15 Td
+(http://localhost:3000/verify/TV-2026-C33089-801C83) Tj
+ET
+
+% Footer Right: Signatures
+BT
+/F2 11 Tf
+1 1 1 rg
+601.89 105 Td
+(TechVerse Academic Board) Tj
+ET
+
+0.831 0.686 0.216 RG
+1 w
+591.89 85 m 761.89 85 l S
+
+BT
+/F1 9 Tf
+0.6 0.65 0.75 rg
+606.89 70 Td
+(Director of Technical Curriculum) Tj
+ET
+
+% Bottom Legal Disclaimer
+BT
+/F1 8 Tf
+0.4 0.45 0.55 rg
+160.945 45 Td
+(Educational completion certificate. Authoritative cryptographic record verified at techverse.academy.) Tj
+ET
+
+Q
+endstream
+endobj
+xref
+0 5
+0000000000 65535 f 
+0000000009 00000 n 
+0000000063 00000 n 
+0000000127 00000 n 
+0000000465 00000 n 
+trailer
+<<
+  /Size 5
+  /Root 1 0 R
+>>
+startxref
+2899
+%%EOF
