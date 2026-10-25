@@ -4,7 +4,7 @@ import {
   Mail,
   MapPin,
   Github,
-  Twitter,
+  Globe,
   Linkedin,
 } from "lucide-react";
 
@@ -70,9 +70,9 @@ export function Footer() {
               <a
                 href="#"
                 className="w-9 h-9 rounded-lg bg-gray-800 hover:bg-gray-700 flex items-center justify-center transition-colors"
-                aria-label="Twitter"
+                aria-label="Website"
               >
-                <Twitter className="w-4 h-4" />
+                <Globe className="w-4 h-4" />
               </a>
               <a
                 href="#"
