@@ -5,7 +5,6 @@ import {
   MapPin,
   Github,
   Globe,
-  Linkedin,
 } from "lucide-react";
 
 const footerSections = [
@@ -74,13 +73,7 @@ export function Footer() {
               >
                 <Globe className="w-4 h-4" />
               </a>
-              <a
-                href="#"
-                className="w-9 h-9 rounded-lg bg-gray-800 hover:bg-gray-700 flex items-center justify-center transition-colors"
-                aria-label="LinkedIn"
-              >
-                <Linkedin className="w-4 h-4" />
-              </a>
+
             </div>
           </div>
 
