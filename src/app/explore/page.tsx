@@ -4,33 +4,14 @@ import { Footer } from '@/components/layout/Footer';
 import db from '@/lib/db';
 import { Search, ArrowRight, Clock, CheckCircle } from 'lucide-react';
 
-export const dynamic = 'force-dynamic';
+export default function ExplorePage() {
+  const pathways = db.prepare(`
+    SELECT p.*, c.name as category_name
+    FROM learning_pathways p
+    JOIN pathway_categories c ON p.category_id = c.id
+    ORDER BY p.published_chapters DESC, p.name ASC
+  `).all() as any[];
 
-export default async function ExplorePage({
-  searchParams
-}: {
-  searchParams: Promise<{ q?: string }>
-}) {
-  const { q } = await searchParams;
-  const query = q?.trim().toLowerCase() || '';
-
-  let pathways: any[] = [];
-  if (query) {
-    pathways = db.prepare(`
-      SELECT p.*, c.name as category_name
-      FROM learning_pathways p
-      JOIN pathway_categories c ON p.category_id = c.id
-      WHERE LOWER(p.name) LIKE ? OR LOWER(p.short_description) LIKE ?
-      ORDER BY p.published_chapters DESC, p.name ASC
-    `).all(`%${query}%`, `%${query}%`);
-  } else {
-    pathways = db.prepare(`
-      SELECT p.*, c.name as category_name
-      FROM learning_pathways p
-      JOIN pathway_categories c ON p.category_id = c.id
-      ORDER BY p.published_chapters DESC, p.name ASC
-    `).all();
-  }
 
   return (
     <div className="min-h-screen bg-[#07070a] text-white">
@@ -48,25 +29,18 @@ export default async function ExplorePage({
             Filter through our catalog of software development, artificial intelligence, cybersecurity, cloud, and systems pathways.
           </p>
 
-          <form method="GET" action="/explore" className="relative max-w-xl">
+          <div className="relative max-w-xl">
             <input
               type="text"
-              name="q"
-              defaultValue={query}
-              placeholder="Search pathways (e.g. Python, AI, Cloud, Security)..."
-              className="w-full bg-[#0f1015] border border-white/15 rounded-full pl-5 pr-12 py-3.5 text-xs text-white placeholder:text-gray-500 focus:outline-none focus:border-cyan-400"
+              placeholder="Filter by discipline below..."
+              readOnly
+              className="w-full bg-[#0f1015] border border-white/15 rounded-full pl-5 pr-12 py-3.5 text-xs text-gray-400 placeholder:text-gray-500 focus:outline-none"
             />
-            <button type="submit" className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white" aria-label="Search">
+            <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400">
               <Search className="w-4 h-4" />
-            </button>
-          </form>
+            </span>
+          </div>
         </div>
-
-        {query && (
-          <p className="text-xs text-gray-400 mb-6 font-mono">
-            Showing results for &ldquo;{query}&rdquo; ({pathways.length} matches)
-          </p>
-        )}
 
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
           {pathways.map((p) => {

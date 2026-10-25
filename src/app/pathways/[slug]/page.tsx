@@ -14,8 +14,14 @@ import {
   ShieldCheck,
   Code
 } from 'lucide-react';
-
-export const dynamic = 'force-dynamic';
+export async function generateStaticParams() {
+  try {
+    const pathways = db.prepare('SELECT slug FROM learning_pathways').all() as any[];
+    return pathways.map((p) => ({ slug: p.slug }));
+  } catch {
+    return [];
+  }
+}
 
 export default async function PathwayDetailPage({
   params

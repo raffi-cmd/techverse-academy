@@ -4,7 +4,7 @@ import { Footer } from '@/components/layout/Footer';
 import db from '@/lib/db';
 import { BookOpen, CheckCircle, Clock, Filter, ArrowRight, Layers } from 'lucide-react';
 
-export const dynamic = 'force-dynamic';
+
 
 export default function PathwaysCatalogPage() {
   const categories = db.prepare('SELECT * FROM pathway_categories ORDER BY sort_order ASC').all() as any[];
