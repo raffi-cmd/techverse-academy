@@ -3,7 +3,6 @@ import {
   BookOpen,
   Mail,
   MapPin,
-  Github,
   Globe,
 } from "lucide-react";
 
@@ -58,14 +57,8 @@ export function Footer() {
               projects, and verifiable completion certificates across 60+
               technology disciplines.
             </p>
+
             <div className="flex items-center gap-3">
-              <a
-                href="#"
-                className="w-9 h-9 rounded-lg bg-gray-800 hover:bg-gray-700 flex items-center justify-center transition-colors"
-                aria-label="GitHub"
-              >
-                <Github className="w-4 h-4" />
-              </a>
               <a
                 href="#"
                 className="w-9 h-9 rounded-lg bg-gray-800 hover:bg-gray-700 flex items-center justify-center transition-colors"
@@ -73,7 +66,6 @@ export function Footer() {
               >
                 <Globe className="w-4 h-4" />
               </a>
-
             </div>
           </div>
 
