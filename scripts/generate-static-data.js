@@ -20,10 +20,17 @@ try {
 
   const pathways = db.prepare(`
     SELECT p.id, p.name, p.slug, p.short_description, p.published_chapters, p.estimated_duration,
-           c.name as category_name
+           p.readiness_status, p.difficulty_level, c.name as category_name
     FROM learning_pathways p
     JOIN pathway_categories c ON p.category_id = c.id
-    ORDER BY p.published_chapters DESC, p.name ASC
+    ORDER BY 
+      CASE p.readiness_status
+        WHEN 'ready' THEN 1
+        WHEN 'curriculum_ready' THEN 2
+        ELSE 3
+      END ASC,
+      p.published_chapters DESC,
+      p.name ASC
   `).all();
 
   fs.writeFileSync(

@@ -12,6 +12,7 @@ interface Pathway {
   category_name: string;
   estimated_duration: string;
   published_chapters: number;
+  readiness_status?: string;
 }
 
 export function ExploreInteractive({ pathways }: { pathways: Pathway[] }) {
@@ -107,13 +108,17 @@ export function ExploreInteractive({ pathways }: { pathways: Pathway[] }) {
                     <span className="text-[10px] font-mono uppercase text-gray-400 bg-white/5 px-2 py-0.5 rounded">
                       {p.category_name}
                     </span>
-                    {isComplete ? (
+                    {p.readiness_status === 'ready' ? (
                       <span className="text-[10px] font-bold text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20 flex items-center gap-1">
-                        <CheckCircle className="w-3 h-3" /> 50 Bab
+                        <CheckCircle className="w-3 h-3" /> SIAP BELAJAR (50 BAB)
+                      </span>
+                    ) : p.readiness_status === 'curriculum_ready' ? (
+                      <span className="text-[10px] font-bold text-cyan-400 bg-cyan-500/10 px-2 py-0.5 rounded border border-cyan-500/20 flex items-center gap-1">
+                        <CheckCircle className="w-3 h-3" /> KURIKULUM 50 BAB
                       </span>
                     ) : (
-                      <span className="text-[10px] text-amber-400 bg-amber-500/10 px-2 py-0.5 rounded">
-                        Dalam Pengembangan
+                      <span className="text-[10px] text-amber-400 bg-amber-500/10 px-2 py-0.5 rounded border border-amber-500/20">
+                        DALAM PENGEMBANGAN
                       </span>
                     )}
                   </div>

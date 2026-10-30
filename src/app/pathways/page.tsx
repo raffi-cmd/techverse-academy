@@ -63,13 +63,17 @@ export default function PathwaysCatalogPage() {
                     <span className="text-[10px] font-mono uppercase tracking-wider text-gray-400 bg-white/5 px-2.5 py-1 rounded-full border border-white/5">
                       {p.category_name}
                     </span>
-                    {isComplete ? (
+                    {p.readiness_status === 'ready' ? (
                       <span className="text-[10px] font-bold text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20 flex items-center gap-1">
-                        <CheckCircle className="w-3 h-3" /> 50 Chapters
+                        <CheckCircle className="w-3 h-3" /> SIAP BELAJAR (50 BAB)
+                      </span>
+                    ) : p.readiness_status === 'curriculum_ready' ? (
+                      <span className="text-[10px] font-bold text-cyan-400 bg-cyan-500/10 px-2 py-0.5 rounded-full border border-cyan-500/20 flex items-center gap-1">
+                        <BookOpen className="w-3 h-3" /> KURIKULUM 50 BAB
                       </span>
                     ) : (
                       <span className="text-[10px] text-amber-400 bg-amber-500/10 px-2 py-0.5 rounded-full border border-amber-500/20">
-                        In Development
+                        DALAM PENGEMBANGAN
                       </span>
                     )}
                   </div>

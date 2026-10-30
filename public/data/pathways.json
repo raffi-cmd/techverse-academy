@@ -1,12 +1,14 @@
 [
   {
-    "id": "pathway_18",
-    "name": "API Engineering",
-    "slug": "api-engineering",
-    "short_description": "Master API Engineering with industry-aligned concepts, hands-on tasks, and verifiable completion certification.",
+    "id": "pathway_37",
+    "name": "Cybersecurity Fundamentals",
+    "slug": "cybersecurity-fundamentals",
+    "short_description": "Master Cybersecurity Fundamentals with industry-aligned concepts, hands-on tasks, and verifiable completion certification.",
     "published_chapters": 50,
-    "estimated_duration": "50 hours",
-    "category_name": "Web & Full-Stack Engineering"
+    "estimated_duration": "60 hours",
+    "readiness_status": "ready",
+    "difficulty_level": "beginner",
+    "category_name": "Cybersecurity & Defensive Ops"
   },
   {
     "id": "pathway_21",
@@ -15,6 +17,8 @@
     "short_description": "Master Artificial Intelligence Engineering with industry-aligned concepts, hands-on tasks, and verifiable completion certification.",
     "published_chapters": 50,
     "estimated_duration": "85 hours",
+    "readiness_status": "curriculum_ready",
+    "difficulty_level": "intermediate",
     "category_name": "Artificial Intelligence & Data"
   },
   {
@@ -24,6 +28,8 @@
     "short_description": "Master Backend Development with industry-aligned concepts, hands-on tasks, and verifiable completion certification.",
     "published_chapters": 50,
     "estimated_duration": "75 hours",
+    "readiness_status": "curriculum_ready",
+    "difficulty_level": "intermediate",
     "category_name": "Web & Full-Stack Engineering"
   },
   {
@@ -33,69 +39,8 @@
     "short_description": "Master Cloud Computing with industry-aligned concepts, hands-on tasks, and verifiable completion certification.",
     "published_chapters": 50,
     "estimated_duration": "60 hours",
-    "category_name": "Cloud, Infrastructure & DevOps"
-  },
-  {
-    "id": "pathway_01",
-    "name": "Computer and IT Fundamentals",
-    "slug": "computer-and-it-fundamentals",
-    "short_description": "Master Computer and IT Fundamentals with industry-aligned concepts, hands-on tasks, and verifiable completion certification.",
-    "published_chapters": 50,
-    "estimated_duration": "50 hours",
-    "category_name": "Computer & IT Foundations"
-  },
-  {
-    "id": "pathway_37",
-    "name": "Cybersecurity Fundamentals",
-    "slug": "cybersecurity-fundamentals",
-    "short_description": "Master Cybersecurity Fundamentals with industry-aligned concepts, hands-on tasks, and verifiable completion certification.",
-    "published_chapters": 50,
-    "estimated_duration": "60 hours",
-    "category_name": "Cybersecurity & Defensive Ops"
-  },
-  {
-    "id": "pathway_28",
-    "name": "Data Analytics",
-    "slug": "data-analytics",
-    "short_description": "Master Data Analytics with industry-aligned concepts, hands-on tasks, and verifiable completion certification.",
-    "published_chapters": 50,
-    "estimated_duration": "50 hours",
-    "category_name": "Artificial Intelligence & Data"
-  },
-  {
-    "id": "pathway_30",
-    "name": "Data Science",
-    "slug": "data-science",
-    "short_description": "Master Data Science with industry-aligned concepts, hands-on tasks, and verifiable completion certification.",
-    "published_chapters": 50,
-    "estimated_duration": "80 hours",
-    "category_name": "Artificial Intelligence & Data"
-  },
-  {
-    "id": "pathway_10",
-    "name": "Data Structures and Algorithms",
-    "slug": "data-structures-and-algorithms",
-    "short_description": "Master Data Structures and Algorithms with industry-aligned concepts, hands-on tasks, and verifiable completion certification.",
-    "published_chapters": 50,
-    "estimated_duration": "70 hours",
-    "category_name": "Software Development & Languages"
-  },
-  {
-    "id": "pathway_11",
-    "name": "Database Engineering",
-    "slug": "database-engineering",
-    "short_description": "Master Database Engineering with industry-aligned concepts, hands-on tasks, and verifiable completion certification.",
-    "published_chapters": 50,
-    "estimated_duration": "60 hours",
-    "category_name": "Systems & Architecture"
-  },
-  {
-    "id": "pathway_34",
-    "name": "DevOps Engineering",
-    "slug": "devops-engineering",
-    "short_description": "Master DevOps Engineering with industry-aligned concepts, hands-on tasks, and verifiable completion certification.",
-    "published_chapters": 50,
-    "estimated_duration": "80 hours",
+    "readiness_status": "curriculum_ready",
+    "difficulty_level": "beginner",
     "category_name": "Cloud, Infrastructure & DevOps"
   },
   {
@@ -105,7 +50,97 @@
     "short_description": "Master Frontend Development with industry-aligned concepts, hands-on tasks, and verifiable completion certification.",
     "published_chapters": 50,
     "estimated_duration": "70 hours",
+    "readiness_status": "curriculum_ready",
+    "difficulty_level": "beginner",
     "category_name": "Web & Full-Stack Engineering"
+  },
+  {
+    "id": "pathway_09",
+    "name": "Software Engineering",
+    "slug": "software-engineering",
+    "short_description": "Master Software Engineering with industry-aligned concepts, hands-on tasks, and verifiable completion certification.",
+    "published_chapters": 50,
+    "estimated_duration": "80 hours",
+    "readiness_status": "curriculum_ready",
+    "difficulty_level": "intermediate",
+    "category_name": "Software Development & Languages"
+  },
+  {
+    "id": "pathway_18",
+    "name": "API Engineering",
+    "slug": "api-engineering",
+    "short_description": "Master API Engineering with industry-aligned concepts, hands-on tasks, and verifiable completion certification.",
+    "published_chapters": 50,
+    "estimated_duration": "50 hours",
+    "readiness_status": "in_development",
+    "difficulty_level": "intermediate",
+    "category_name": "Web & Full-Stack Engineering"
+  },
+  {
+    "id": "pathway_01",
+    "name": "Computer and IT Fundamentals",
+    "slug": "computer-and-it-fundamentals",
+    "short_description": "Master Computer and IT Fundamentals with industry-aligned concepts, hands-on tasks, and verifiable completion certification.",
+    "published_chapters": 50,
+    "estimated_duration": "50 hours",
+    "readiness_status": "in_development",
+    "difficulty_level": "beginner",
+    "category_name": "Computer & IT Foundations"
+  },
+  {
+    "id": "pathway_28",
+    "name": "Data Analytics",
+    "slug": "data-analytics",
+    "short_description": "Master Data Analytics with industry-aligned concepts, hands-on tasks, and verifiable completion certification.",
+    "published_chapters": 50,
+    "estimated_duration": "50 hours",
+    "readiness_status": "in_development",
+    "difficulty_level": "beginner",
+    "category_name": "Artificial Intelligence & Data"
+  },
+  {
+    "id": "pathway_30",
+    "name": "Data Science",
+    "slug": "data-science",
+    "short_description": "Master Data Science with industry-aligned concepts, hands-on tasks, and verifiable completion certification.",
+    "published_chapters": 50,
+    "estimated_duration": "80 hours",
+    "readiness_status": "in_development",
+    "difficulty_level": "intermediate",
+    "category_name": "Artificial Intelligence & Data"
+  },
+  {
+    "id": "pathway_10",
+    "name": "Data Structures and Algorithms",
+    "slug": "data-structures-and-algorithms",
+    "short_description": "Master Data Structures and Algorithms with industry-aligned concepts, hands-on tasks, and verifiable completion certification.",
+    "published_chapters": 50,
+    "estimated_duration": "70 hours",
+    "readiness_status": "in_development",
+    "difficulty_level": "intermediate",
+    "category_name": "Software Development & Languages"
+  },
+  {
+    "id": "pathway_11",
+    "name": "Database Engineering",
+    "slug": "database-engineering",
+    "short_description": "Master Database Engineering with industry-aligned concepts, hands-on tasks, and verifiable completion certification.",
+    "published_chapters": 50,
+    "estimated_duration": "60 hours",
+    "readiness_status": "in_development",
+    "difficulty_level": "intermediate",
+    "category_name": "Systems & Architecture"
+  },
+  {
+    "id": "pathway_34",
+    "name": "DevOps Engineering",
+    "slug": "devops-engineering",
+    "short_description": "Master DevOps Engineering with industry-aligned concepts, hands-on tasks, and verifiable completion certification.",
+    "published_chapters": 50,
+    "estimated_duration": "80 hours",
+    "readiness_status": "in_development",
+    "difficulty_level": "intermediate",
+    "category_name": "Cloud, Infrastructure & DevOps"
   },
   {
     "id": "pathway_08",
@@ -114,6 +149,8 @@
     "short_description": "Master Full-Stack Development with industry-aligned concepts, hands-on tasks, and verifiable completion certification.",
     "published_chapters": 50,
     "estimated_duration": "90 hours",
+    "readiness_status": "in_development",
+    "difficulty_level": "intermediate",
     "category_name": "Web & Full-Stack Engineering"
   },
   {
@@ -123,6 +160,8 @@
     "short_description": "Master Generative AI Engineering with industry-aligned concepts, hands-on tasks, and verifiable completion certification.",
     "published_chapters": 50,
     "estimated_duration": "60 hours",
+    "readiness_status": "in_development",
+    "difficulty_level": "intermediate",
     "category_name": "Artificial Intelligence & Data"
   },
   {
@@ -132,6 +171,8 @@
     "short_description": "Master JavaScript Development with industry-aligned concepts, hands-on tasks, and verifiable completion certification.",
     "published_chapters": 50,
     "estimated_duration": "65 hours",
+    "readiness_status": "in_development",
+    "difficulty_level": "beginner",
     "category_name": "Software Development & Languages"
   },
   {
@@ -141,6 +182,8 @@
     "short_description": "Master Linux System Administration with industry-aligned concepts, hands-on tasks, and verifiable completion certification.",
     "published_chapters": 50,
     "estimated_duration": "60 hours",
+    "readiness_status": "in_development",
+    "difficulty_level": "beginner",
     "category_name": "Systems & Architecture"
   },
   {
@@ -150,6 +193,8 @@
     "short_description": "Master Mobile Application Development with industry-aligned concepts, hands-on tasks, and verifiable completion certification.",
     "published_chapters": 50,
     "estimated_duration": "65 hours",
+    "readiness_status": "in_development",
+    "difficulty_level": "intermediate",
     "category_name": "Web & Full-Stack Engineering"
   },
   {
@@ -159,6 +204,8 @@
     "short_description": "Master Programming Fundamentals with industry-aligned concepts, hands-on tasks, and verifiable completion certification.",
     "published_chapters": 50,
     "estimated_duration": "60 hours",
+    "readiness_status": "in_development",
+    "difficulty_level": "beginner",
     "category_name": "Software Development & Languages"
   },
   {
@@ -168,6 +215,8 @@
     "short_description": "Master Prompt Engineering with industry-aligned concepts, hands-on tasks, and verifiable completion certification.",
     "published_chapters": 50,
     "estimated_duration": "35 hours",
+    "readiness_status": "in_development",
+    "difficulty_level": "beginner",
     "category_name": "Artificial Intelligence & Data"
   },
   {
@@ -177,6 +226,8 @@
     "short_description": "Master Python Development with industry-aligned concepts, hands-on tasks, and verifiable completion certification.",
     "published_chapters": 50,
     "estimated_duration": "65 hours",
+    "readiness_status": "in_development",
+    "difficulty_level": "beginner",
     "category_name": "Software Development & Languages"
   },
   {
@@ -186,16 +237,9 @@
     "short_description": "Master SQL and Database Administration with industry-aligned concepts, hands-on tasks, and verifiable completion certification.",
     "published_chapters": 50,
     "estimated_duration": "50 hours",
+    "readiness_status": "in_development",
+    "difficulty_level": "beginner",
     "category_name": "Systems & Architecture"
-  },
-  {
-    "id": "pathway_09",
-    "name": "Software Engineering",
-    "slug": "software-engineering",
-    "short_description": "Master Software Engineering with industry-aligned concepts, hands-on tasks, and verifiable completion certification.",
-    "published_chapters": 50,
-    "estimated_duration": "80 hours",
-    "category_name": "Software Development & Languages"
   },
   {
     "id": "pathway_19",
@@ -204,6 +248,8 @@
     "short_description": "Master Software Testing and QA with industry-aligned concepts, hands-on tasks, and verifiable completion certification.",
     "published_chapters": 50,
     "estimated_duration": "50 hours",
+    "readiness_status": "in_development",
+    "difficulty_level": "beginner",
     "category_name": "Software Development & Languages"
   },
   {
@@ -213,6 +259,8 @@
     "short_description": "Master System Design with industry-aligned concepts, hands-on tasks, and verifiable completion certification.",
     "published_chapters": 50,
     "estimated_duration": "65 hours",
+    "readiness_status": "in_development",
+    "difficulty_level": "advanced",
     "category_name": "Systems & Architecture"
   },
   {
@@ -222,6 +270,8 @@
     "short_description": "Master TypeScript Development with industry-aligned concepts, hands-on tasks, and verifiable completion certification.",
     "published_chapters": 50,
     "estimated_duration": "55 hours",
+    "readiness_status": "in_development",
+    "difficulty_level": "intermediate",
     "category_name": "Software Development & Languages"
   },
   {
@@ -231,6 +281,8 @@
     "short_description": "Master AI Application Development with industry-aligned concepts, hands-on tasks, and verifiable completion certification.",
     "published_chapters": 0,
     "estimated_duration": "60 hours",
+    "readiness_status": "in_development",
+    "difficulty_level": "intermediate",
     "category_name": "Artificial Intelligence & Data"
   },
   {
@@ -240,6 +292,8 @@
     "short_description": "Master Android Development with industry-aligned concepts, hands-on tasks, and verifiable completion certification.",
     "published_chapters": 0,
     "estimated_duration": "70 hours",
+    "readiness_status": "in_development",
+    "difficulty_level": "intermediate",
     "category_name": "Web & Full-Stack Engineering"
   },
   {
@@ -249,6 +303,8 @@
     "short_description": "Master Application Security with industry-aligned concepts, hands-on tasks, and verifiable completion certification.",
     "published_chapters": 0,
     "estimated_duration": "65 hours",
+    "readiness_status": "in_development",
+    "difficulty_level": "intermediate",
     "category_name": "Cybersecurity & Defensive Ops"
   },
   {
@@ -258,6 +314,8 @@
     "short_description": "Master Automation Engineering with industry-aligned concepts, hands-on tasks, and verifiable completion certification.",
     "published_chapters": 0,
     "estimated_duration": "55 hours",
+    "readiness_status": "in_development",
+    "difficulty_level": "intermediate",
     "category_name": "Software Development & Languages"
   },
   {
@@ -267,6 +325,8 @@
     "short_description": "Master Blockchain Development with industry-aligned concepts, hands-on tasks, and verifiable completion certification.",
     "published_chapters": 0,
     "estimated_duration": "65 hours",
+    "readiness_status": "in_development",
+    "difficulty_level": "intermediate",
     "category_name": "Software Development & Languages"
   },
   {
@@ -276,6 +336,8 @@
     "short_description": "Master Business Intelligence with industry-aligned concepts, hands-on tasks, and verifiable completion certification.",
     "published_chapters": 0,
     "estimated_duration": "45 hours",
+    "readiness_status": "in_development",
+    "difficulty_level": "beginner",
     "category_name": "Artificial Intelligence & Data"
   },
   {
@@ -285,6 +347,8 @@
     "short_description": "Master Cloud Architecture with industry-aligned concepts, hands-on tasks, and verifiable completion certification.",
     "published_chapters": 0,
     "estimated_duration": "70 hours",
+    "readiness_status": "in_development",
+    "difficulty_level": "advanced",
     "category_name": "Cloud, Infrastructure & DevOps"
   },
   {
@@ -294,6 +358,8 @@
     "short_description": "Master Computer Science Fundamentals with industry-aligned concepts, hands-on tasks, and verifiable completion certification.",
     "published_chapters": 0,
     "estimated_duration": "70 hours",
+    "readiness_status": "in_development",
+    "difficulty_level": "beginner",
     "category_name": "Computer & IT Foundations"
   },
   {
@@ -303,6 +369,8 @@
     "short_description": "Master Computer Vision with industry-aligned concepts, hands-on tasks, and verifiable completion certification.",
     "published_chapters": 0,
     "estimated_duration": "65 hours",
+    "readiness_status": "in_development",
+    "difficulty_level": "advanced",
     "category_name": "Artificial Intelligence & Data"
   },
   {
@@ -312,6 +380,8 @@
     "short_description": "Master Data Engineering with industry-aligned concepts, hands-on tasks, and verifiable completion certification.",
     "published_chapters": 0,
     "estimated_duration": "75 hours",
+    "readiness_status": "in_development",
+    "difficulty_level": "intermediate",
     "category_name": "Artificial Intelligence & Data"
   },
   {
@@ -321,6 +391,8 @@
     "short_description": "Master Data Governance and Data Quality with industry-aligned concepts, hands-on tasks, and verifiable completion certification.",
     "published_chapters": 0,
     "estimated_duration": "45 hours",
+    "readiness_status": "in_development",
+    "difficulty_level": "intermediate",
     "category_name": "Artificial Intelligence & Data"
   },
   {
@@ -330,6 +402,8 @@
     "short_description": "Master Deep Learning with industry-aligned concepts, hands-on tasks, and verifiable completion certification.",
     "published_chapters": 0,
     "estimated_duration": "75 hours",
+    "readiness_status": "in_development",
+    "difficulty_level": "advanced",
     "category_name": "Artificial Intelligence & Data"
   },
   {
@@ -339,6 +413,8 @@
     "short_description": "Master Defensive Security and SOC Fundamentals with industry-aligned concepts, hands-on tasks, and verifiable completion certification.",
     "published_chapters": 0,
     "estimated_duration": "70 hours",
+    "readiness_status": "in_development",
+    "difficulty_level": "intermediate",
     "category_name": "Cybersecurity & Defensive Ops"
   },
   {
@@ -348,6 +424,8 @@
     "short_description": "Master Distributed Systems with industry-aligned concepts, hands-on tasks, and verifiable completion certification.",
     "published_chapters": 0,
     "estimated_duration": "80 hours",
+    "readiness_status": "in_development",
+    "difficulty_level": "advanced",
     "category_name": "Systems & Architecture"
   },
   {
@@ -357,6 +435,8 @@
     "short_description": "Master Game Development with industry-aligned concepts, hands-on tasks, and verifiable completion certification.",
     "published_chapters": 0,
     "estimated_duration": "75 hours",
+    "readiness_status": "in_development",
+    "difficulty_level": "intermediate",
     "category_name": "Software Development & Languages"
   },
   {
@@ -366,6 +446,8 @@
     "short_description": "Master IT Project Management with industry-aligned concepts, hands-on tasks, and verifiable completion certification.",
     "published_chapters": 0,
     "estimated_duration": "40 hours",
+    "readiness_status": "in_development",
+    "difficulty_level": "beginner",
     "category_name": "Computer & IT Foundations"
   },
   {
@@ -375,6 +457,8 @@
     "short_description": "Master Infrastructure Automation with industry-aligned concepts, hands-on tasks, and verifiable completion certification.",
     "published_chapters": 0,
     "estimated_duration": "60 hours",
+    "readiness_status": "in_development",
+    "difficulty_level": "intermediate",
     "category_name": "Cloud, Infrastructure & DevOps"
   },
   {
@@ -384,6 +468,8 @@
     "short_description": "Master Large Language Model Engineering with industry-aligned concepts, hands-on tasks, and verifiable completion certification.",
     "published_chapters": 0,
     "estimated_duration": "70 hours",
+    "readiness_status": "in_development",
+    "difficulty_level": "advanced",
     "category_name": "Artificial Intelligence & Data"
   },
   {
@@ -393,6 +479,8 @@
     "short_description": "Master MLOps Engineering with industry-aligned concepts, hands-on tasks, and verifiable completion certification.",
     "published_chapters": 0,
     "estimated_duration": "65 hours",
+    "readiness_status": "in_development",
+    "difficulty_level": "advanced",
     "category_name": "Artificial Intelligence & Data"
   },
   {
@@ -402,6 +490,8 @@
     "short_description": "Master Machine Learning Engineering with industry-aligned concepts, hands-on tasks, and verifiable completion certification.",
     "published_chapters": 0,
     "estimated_duration": "80 hours",
+    "readiness_status": "in_development",
+    "difficulty_level": "intermediate",
     "category_name": "Artificial Intelligence & Data"
   },
   {
@@ -411,6 +501,8 @@
     "short_description": "Master Natural Language Processing with industry-aligned concepts, hands-on tasks, and verifiable completion certification.",
     "published_chapters": 0,
     "estimated_duration": "70 hours",
+    "readiness_status": "in_development",
+    "difficulty_level": "advanced",
     "category_name": "Artificial Intelligence & Data"
   },
   {
@@ -420,6 +512,8 @@
     "short_description": "Master Network Engineering with industry-aligned concepts, hands-on tasks, and verifiable completion certification.",
     "published_chapters": 0,
     "estimated_duration": "55 hours",
+    "readiness_status": "in_development",
+    "difficulty_level": "beginner",
     "category_name": "Systems & Architecture"
   },
   {
@@ -429,6 +523,8 @@
     "short_description": "Master Observability and Monitoring with industry-aligned concepts, hands-on tasks, and verifiable completion certification.",
     "published_chapters": 0,
     "estimated_duration": "50 hours",
+    "readiness_status": "in_development",
+    "difficulty_level": "intermediate",
     "category_name": "Cloud, Infrastructure & DevOps"
   },
   {
@@ -438,6 +534,8 @@
     "short_description": "Master Open-Source Software Development with industry-aligned concepts, hands-on tasks, and verifiable completion certification.",
     "published_chapters": 0,
     "estimated_duration": "40 hours",
+    "readiness_status": "in_development",
+    "difficulty_level": "intermediate",
     "category_name": "Software Development & Languages"
   },
   {
@@ -447,6 +545,8 @@
     "short_description": "Master Performance and Reliability Engineering with industry-aligned concepts, hands-on tasks, and verifiable completion certification.",
     "published_chapters": 0,
     "estimated_duration": "60 hours",
+    "readiness_status": "in_development",
+    "difficulty_level": "advanced",
     "category_name": "Systems & Architecture"
   },
   {
@@ -456,6 +556,8 @@
     "short_description": "Master Platform Engineering with industry-aligned concepts, hands-on tasks, and verifiable completion certification.",
     "published_chapters": 0,
     "estimated_duration": "65 hours",
+    "readiness_status": "in_development",
+    "difficulty_level": "advanced",
     "category_name": "Cloud, Infrastructure & DevOps"
   },
   {
@@ -465,6 +567,8 @@
     "short_description": "Master Secure Software Development with industry-aligned concepts, hands-on tasks, and verifiable completion certification.",
     "published_chapters": 0,
     "estimated_duration": "60 hours",
+    "readiness_status": "in_development",
+    "difficulty_level": "intermediate",
     "category_name": "Cybersecurity & Defensive Ops"
   },
   {
@@ -474,6 +578,8 @@
     "short_description": "Master Site Reliability Engineering with industry-aligned concepts, hands-on tasks, and verifiable completion certification.",
     "published_chapters": 0,
     "estimated_duration": "70 hours",
+    "readiness_status": "in_development",
+    "difficulty_level": "advanced",
     "category_name": "Cloud, Infrastructure & DevOps"
   },
   {
@@ -483,6 +589,8 @@
     "short_description": "Master Software Architecture with industry-aligned concepts, hands-on tasks, and verifiable completion certification.",
     "published_chapters": 0,
     "estimated_duration": "70 hours",
+    "readiness_status": "in_development",
+    "difficulty_level": "advanced",
     "category_name": "Systems & Architecture"
   },
   {
@@ -492,6 +600,8 @@
     "short_description": "Master Technical Writing with industry-aligned concepts, hands-on tasks, and verifiable completion certification.",
     "published_chapters": 0,
     "estimated_duration": "35 hours",
+    "readiness_status": "in_development",
+    "difficulty_level": "beginner",
     "category_name": "Computer & IT Foundations"
   },
   {
@@ -501,6 +611,8 @@
     "short_description": "Master UI/UX Engineering with industry-aligned concepts, hands-on tasks, and verifiable completion certification.",
     "published_chapters": 0,
     "estimated_duration": "45 hours",
+    "readiness_status": "in_development",
+    "difficulty_level": "beginner",
     "category_name": "Web & Full-Stack Engineering"
   },
   {
@@ -510,6 +622,8 @@
     "short_description": "Master Web Accessibility Engineering with industry-aligned concepts, hands-on tasks, and verifiable completion certification.",
     "published_chapters": 0,
     "estimated_duration": "40 hours",
+    "readiness_status": "in_development",
+    "difficulty_level": "beginner",
     "category_name": "Web & Full-Stack Engineering"
   },
   {
@@ -519,6 +633,8 @@
     "short_description": "Master Web Performance Engineering with industry-aligned concepts, hands-on tasks, and verifiable completion certification.",
     "published_chapters": 0,
     "estimated_duration": "40 hours",
+    "readiness_status": "in_development",
+    "difficulty_level": "advanced",
     "category_name": "Web & Full-Stack Engineering"
   },
   {
@@ -528,6 +644,8 @@
     "short_description": "Master Windows System Administration with industry-aligned concepts, hands-on tasks, and verifiable completion certification.",
     "published_chapters": 0,
     "estimated_duration": "50 hours",
+    "readiness_status": "in_development",
+    "difficulty_level": "beginner",
     "category_name": "Systems & Architecture"
   },
   {
@@ -537,6 +655,8 @@
     "short_description": "Master iOS Development with industry-aligned concepts, hands-on tasks, and verifiable completion certification.",
     "published_chapters": 0,
     "estimated_duration": "70 hours",
+    "readiness_status": "in_development",
+    "difficulty_level": "intermediate",
     "category_name": "Web & Full-Stack Engineering"
   }
 ]

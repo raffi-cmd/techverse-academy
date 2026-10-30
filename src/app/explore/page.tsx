@@ -9,7 +9,14 @@ export default function ExplorePage() {
     SELECT p.*, c.name as category_name
     FROM learning_pathways p
     JOIN pathway_categories c ON p.category_id = c.id
-    ORDER BY p.published_chapters DESC, p.name ASC
+    ORDER BY 
+      CASE p.readiness_status
+        WHEN 'ready' THEN 1
+        WHEN 'curriculum_ready' THEN 2
+        ELSE 3
+      END ASC,
+      p.published_chapters DESC,
+      p.name ASC
   `).all() as any[];
 
   // Normalize plain object to avoid server-client boundary serialization warnings
