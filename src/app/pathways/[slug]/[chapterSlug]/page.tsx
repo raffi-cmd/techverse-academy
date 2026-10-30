@@ -30,7 +30,8 @@ export default async function Page({
 
     if (chapter) {
       const lessons = db.prepare(`
-        SELECT id, title, slug, content, content_type, sort_order, estimated_time
+        SELECT id, title, slug, content, content_type, sort_order, estimated_time,
+               title_id, title_en, content_id, content_en
         FROM lessons
         WHERE chapter_id = ?
         ORDER BY sort_order ASC
@@ -41,7 +42,8 @@ export default async function Page({
 
       if (asmt) {
         questions = db.prepare(`
-          SELECT id, question_text, question_type, options, correct_answer, explanation, points, sort_order
+          SELECT id, question_text, question_type, options, correct_answer, explanation, points, sort_order,
+                 question_text_id, question_text_en, explanation_id, explanation_en, hint_id, hint_en
           FROM assessment_questions
           WHERE assessment_id = ?
           ORDER BY sort_order ASC
