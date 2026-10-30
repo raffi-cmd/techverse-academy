@@ -1,49 +1,48 @@
 'use client';
 
 import Link from "next/link";
-import { Globe } from "lucide-react";
+import { Globe, Heart, Sparkles } from "lucide-react";
 
 const footerSections = [
   {
-    title: "Learn",
+    title: "Belajar & Karier",
     links: [
-      { label: "Explore Fields", href: "/explore" },
-      { label: "All Pathways", href: "/pathways" },
-      { label: "How It Works", href: "/how-it-works" },
-      { label: "Curriculum Pathways", href: "/pathways" },
-      { label: "Pricing", href: "/pricing" },
+      { label: "Jalur Belajar (Pathways)", href: "/pathways" },
+      { label: "Tes Rekomendasi Karier IT", href: "/career-finder" },
+      { label: "Eksplorasi Disiplin", href: "/explore" },
+      { label: "100% Gratis (Tanpa Biaya)", href: "/pricing" },
+      { label: "Panduan Belajar", href: "/how-it-works" },
     ],
   },
   {
-    title: "Resources",
+    title: "Sumber Daya",
     links: [
-      { label: "Getting Started", href: "/how-it-works" },
-      { label: "FAQ", href: "/faq" },
-      { label: "Verify Certificate", href: "/verify" },
-      { label: "About DEVORA", href: "/about" },
+      { label: "Tentang DEVORA", href: "/about" },
+      { label: "Tanya Jawab (FAQ)", href: "/faq" },
+      { label: "Verifikasi Sertifikat", href: "/verify" },
     ],
   },
   {
-    title: "Legal",
+    title: "Kebijakan & Privasi",
     links: [
-      { label: "Privacy Policy", href: "/privacy" },
-      { label: "Terms of Service", href: "/terms" },
+      { label: "Kebijakan Privasi", href: "/privacy" },
+      { label: "Ketentuan Layanan", href: "/terms" },
     ],
   },
 ];
 
 export function Footer() {
   return (
-    <footer className="bg-gray-950 text-gray-400">
+    <footer className="bg-gray-950 text-gray-400 border-t border-white/5">
       <div className="container-main py-16 lg:py-20">
         <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-8 lg:gap-12">
-          {/* Brand */}
+          {/* Brand Column */}
           <div className="col-span-2 md:col-span-4 lg:col-span-2 mb-4 lg:mb-0">
             <Link href="/" className="flex items-center gap-3 mb-4">
               <div className="w-9 h-9 rounded-xl overflow-hidden bg-white flex items-center justify-center p-0.5">
                 <img
                   src="/techverse-academy/devora-logo.png"
-                  alt="DEVORA"
+                  alt="DEVORA Logo"
                   className="w-full h-full object-cover rounded-lg"
                   onError={(e) => {
                     const target = e.target as HTMLImageElement;
@@ -63,23 +62,24 @@ export function Footer() {
               </div>
             </Link>
             <p className="text-sm text-gray-500 max-w-sm mb-6 leading-relaxed">
-              Devora is an IT Learning & Career Platform that helps learners develop
-              practical technology skills through structured learning pathways,
-              comprehensive assessments, and verified credentials.
+              Devora adalah platform pembelajaran IT gratis yang membantu pembelajar menguasai keterampilan teknologi praktis melalui jalur kurikulum bertahap, ujian pemahaman, dan sertifikat yang dapat diverifikasi secara online.
             </p>
 
             <div className="flex items-center gap-3">
               <a
                 href="https://raffi-cmd.github.io/techverse-academy/"
                 className="w-9 h-9 rounded-lg bg-gray-800 hover:bg-gray-700 flex items-center justify-center transition-colors text-gray-300"
-                aria-label="Website"
+                aria-label="DEVORA Portal"
               >
                 <Globe className="w-4 h-4" />
               </a>
+              <span className="text-xs text-emerald-400 flex items-center gap-1 font-semibold">
+                <Heart className="w-3.5 h-3.5 fill-emerald-400 text-emerald-400" /> 100% Free Open Education
+              </span>
             </div>
           </div>
 
-          {/* Link sections */}
+          {/* Link Sections */}
           {footerSections.map((section) => (
             <div key={section.title}>
               <h3 className="text-sm font-semibold text-white mb-4">
@@ -101,13 +101,13 @@ export function Footer() {
           ))}
         </div>
 
-        {/* Bottom */}
+        {/* Bottom Attribution */}
         <div className="border-t border-gray-800 mt-12 pt-8 flex flex-col sm:flex-row items-center justify-between gap-4">
           <p className="text-xs text-gray-600">
-            &copy; 2026 DEVORA. All rights reserved.
+            &copy; 2026 DEVORA. All rights reserved. 100% Free IT Education.
           </p>
           <p className="text-xs text-gray-600 text-center sm:text-right">
-            Devora provides hands-on career development curriculum and verifiable completion records.
+            Sertifikat DEVORA adalah bukti penyelesaian kurikulum teknis dan verifikasi pencapaian kompetensi.
           </p>
         </div>
       </div>

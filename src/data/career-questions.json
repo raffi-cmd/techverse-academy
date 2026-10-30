@@ -1,0 +1,986 @@
+[
+  {
+    "id": 1,
+    "question": "Ketika menghadapi masalah kompleks, pendekatan apa yang paling Anda sukai?",
+    "category": "Problem Solving",
+    "options": [
+      {
+        "text": "Menganalisis data, pola angka, dan membuat kesimpulan berbasis statistik.",
+        "scores": {
+          "data": 3,
+          "ai": 2
+        }
+      },
+      {
+        "text": "Menulis kode algoritma logis untuk memecah masalah menjadi fungsi-fungsi kecil.",
+        "scores": {
+          "web": 3,
+          "ai": 2
+        }
+      },
+      {
+        "text": "Menginvestigasi celah kelemahan sistem dan cara mencegah serangan.",
+        "scores": {
+          "cyber": 3,
+          "cloud": 1
+        }
+      },
+      {
+        "text": "Merancang visual alur pengguna agar solusi intuitif dan mudah dipahami.",
+        "scores": {
+          "uiux": 3,
+          "web": 1
+        }
+      }
+    ]
+  },
+  {
+    "id": 2,
+    "question": "Jenis produk teknologi apa yang paling membuat Anda bersemangat untuk dibangun?",
+    "category": "Product Interest",
+    "options": [
+      {
+        "text": "Model kecerdasan buatan, asisten chatbot, atau sistem computer vision.",
+        "scores": {
+          "ai": 3
+        }
+      },
+      {
+        "text": "Website interaktif berskala besar atau platform SaaS modern.",
+        "scores": {
+          "web": 3
+        }
+      },
+      {
+        "text": "Aplikasi smartphone iOS atau Android yang dipakai jutaan orang setiap hari.",
+        "scores": {
+          "mobile": 3
+        }
+      },
+      {
+        "text": "Infrastruktur cloud otomatis yang menangani jutaan request tanpa down.",
+        "scores": {
+          "cloud": 3
+        }
+      }
+    ]
+  },
+  {
+    "id": 3,
+    "question": "Bagaimana Anda memandang matematika dan statistik dalam pekerjaan sehari-hari?",
+    "category": "Math & Analytics",
+    "options": [
+      {
+        "text": "Sangat menarik, saya suka kalkulus, aljabar linear, dan probabilitas.",
+        "scores": {
+          "ai": 3,
+          "data": 3
+        }
+      },
+      {
+        "text": "Cukup untuk logika bisnis dasar, tapi saya lebih suka arsitektur kode.",
+        "scores": {
+          "web": 2,
+          "mobile": 2
+        }
+      },
+      {
+        "text": "Saya lebih fokus pada kriptografi, enkripsi, dan integritas bit.",
+        "scores": {
+          "cyber": 3
+        }
+      },
+      {
+        "text": "Saya lebih menyukai psikologi perilaku pengguna dan estetika visual.",
+        "scores": {
+          "uiux": 3
+        }
+      }
+    ]
+  },
+  {
+    "id": 4,
+    "question": "Dalam sebuah tim pengembangan perangkat lunak, peran mana yang paling menarik bagi Anda?",
+    "category": "Team Role",
+    "options": [
+      {
+        "text": "Melatih model neural network dan mengevaluasi akurasi prediksi.",
+        "scores": {
+          "ai": 3
+        }
+      },
+      {
+        "text": "Membangun API backend dan menyusun komponen antarmuka web.",
+        "scores": {
+          "web": 3
+        }
+      },
+      {
+        "text": "Menguji skenario ekstrem, mencari bug tersembunyi, dan memastikan standar mutu.",
+        "scores": {
+          "qa": 3
+        }
+      },
+      {
+        "text": "Mengamankan jaringan dari peretasan dan melakukan penetration testing.",
+        "scores": {
+          "cyber": 3
+        }
+      }
+    ]
+  },
+  {
+    "id": 5,
+    "question": "Apa pendapat Anda tentang antarmuka visual (User Interface)?",
+    "category": "Design Preference",
+    "options": [
+      {
+        "text": "Sangat penting; warna, tipografi, dan interaksi mikro adalah passion saya.",
+        "scores": {
+          "uiux": 3,
+          "web": 1
+        }
+      },
+      {
+        "text": "Penting, tapi saya lebih peduli pada performa mobile dan responsivitas layar kecil.",
+        "scores": {
+          "mobile": 3,
+          "uiux": 1
+        }
+      },
+      {
+        "text": "Bagus, tapi saya lebih suka bekerja di terminal atau query database tanpa GUI.",
+        "scores": {
+          "cloud": 2,
+          "cyber": 2,
+          "data": 1
+        }
+      },
+      {
+        "text": "Fokus utama saya adalah keakuratan inferensi model terlepas dari tampilannya.",
+        "scores": {
+          "ai": 3
+        }
+      }
+    ]
+  },
+  {
+    "id": 6,
+    "question": "Ketika mendengar kata Otomasi, apa yang terlintas pertama kali di benak Anda?",
+    "category": "Automation",
+    "options": [
+      {
+        "text": "Pipeline CI/CD, deployment Kubernetes, dan konfigurasi Terraform.",
+        "scores": {
+          "cloud": 3
+        }
+      },
+      {
+        "text": "Automated test suite (Playwright, Cypress, Jest) untuk mencegah regresi.",
+        "scores": {
+          "qa": 3
+        }
+      },
+      {
+        "text": "Agen AI otonom yang bisa menyelesaikan alur kerja cerdas.",
+        "scores": {
+          "ai": 3
+        }
+      },
+      {
+        "text": "Web scraping dan sinkronisasi data antar REST API.",
+        "scores": {
+          "web": 2,
+          "data": 2
+        }
+      }
+    ]
+  },
+  {
+    "id": 7,
+    "question": "Apa reaksi Anda saat mengetahui sebuah situs web mengalami kebocoran data pengguna?",
+    "category": "Security Inclination",
+    "options": [
+      {
+        "text": "Penasaran vektor serangannya: SQL injection, XSS, atau credential stuffing.",
+        "scores": {
+          "cyber": 3
+        }
+      },
+      {
+        "text": "Khawatir terhadap konfigurasi firewall dan security group cloud yang salah.",
+        "scores": {
+          "cloud": 2,
+          "cyber": 2
+        }
+      },
+      {
+        "text": "Memikirkan bagaimana sanitasi input dan enkripsi password pada backend.",
+        "scores": {
+          "web": 2,
+          "cyber": 1
+        }
+      },
+      {
+        "text": "Mengevaluasi bagaimana data sensitif diisolasi di tingkat database.",
+        "scores": {
+          "data": 2,
+          "cyber": 1
+        }
+      }
+    ]
+  },
+  {
+    "id": 8,
+    "question": "Bagaimana preferensi Anda terhadap perangkat keras dan platform target?",
+    "category": "Platform Focus",
+    "options": [
+      {
+        "text": "Smartphone (Android & iOS), mengoptimalkan sensor, baterai, dan touch screen.",
+        "scores": {
+          "mobile": 3
+        }
+      },
+      {
+        "text": "Browser lintas platform di desktop, tablet, dan laptop.",
+        "scores": {
+          "web": 3
+        }
+      },
+      {
+        "text": "Server cluster di data center cloud (AWS, GCP, Linux instances).",
+        "scores": {
+          "cloud": 3
+        }
+      },
+      {
+        "text": "Cluster GPU akselerator untuk kalkulasi tensor berkecepatan tinggi.",
+        "scores": {
+          "ai": 3
+        }
+      }
+    ]
+  },
+  {
+    "id": 9,
+    "question": "Ketika melihat grafik atau dashboard visual bisnis, apa yang paling Anda perhatikan?",
+    "category": "Analytics",
+    "options": [
+      {
+        "text": "Tren anomali, korelasi variabel, dan peluang prediktif bisnis.",
+        "scores": {
+          "data": 3,
+          "ai": 2
+        }
+      },
+      {
+        "text": "Komponen visualisasi data (Chart.js, D3) dan pengalaman interaksi pengguna.",
+        "scores": {
+          "uiux": 2,
+          "web": 2
+        }
+      },
+      {
+        "text": "Apakah query database yang menghasilkan chart tersebut efisien dan berindeks.",
+        "scores": {
+          "web": 2,
+          "cloud": 1
+        }
+      },
+      {
+        "text": "Apakah data yang ditampilkan akurat dan bebas dari bias atau bug perhitungan.",
+        "scores": {
+          "qa": 2,
+          "data": 2
+        }
+      }
+    ]
+  },
+  {
+    "id": 10,
+    "question": "Seberapa penting dokumentasi dan penjaminan kualitas kode bagi Anda?",
+    "category": "Quality Mindset",
+    "options": [
+      {
+        "text": "Sangat krusial; perangkat lunak tanpa automated tests adalah bom waktu.",
+        "scores": {
+          "qa": 3,
+          "web": 1
+        }
+      },
+      {
+        "text": "Penting, terutama dokumen arsitektur dan threat modeling keamanan.",
+        "scores": {
+          "cyber": 2,
+          "cloud": 2
+        }
+      },
+      {
+        "text": "Sangat penting dalam metrik evaluasi model (precision, recall, F1 score).",
+        "scores": {
+          "ai": 2,
+          "data": 2
+        }
+      },
+      {
+        "text": "Penting dalam bentuk design system dan panduan style UI/UX yang konsisten.",
+        "scores": {
+          "uiux": 3
+        }
+      }
+    ]
+  },
+  {
+    "id": 11,
+    "question": "Bahasa pemrograman atau alat mana yang paling menarik bagi Anda untuk dipelajari?",
+    "category": "Tooling Affinity",
+    "options": [
+      {
+        "text": "Python, PyTorch, LangChain, HuggingFace.",
+        "scores": {
+          "ai": 3
+        }
+      },
+      {
+        "text": "TypeScript, React, Next.js, Node.js.",
+        "scores": {
+          "web": 3
+        }
+      },
+      {
+        "text": "Kotlin, Swift, Flutter, React Native.",
+        "scores": {
+          "mobile": 3
+        }
+      },
+      {
+        "text": "Docker, Kubernetes, Linux Bash, Terraform.",
+        "scores": {
+          "cloud": 3
+        }
+      }
+    ]
+  },
+  {
+    "id": 12,
+    "question": "Bagaimana gaya Anda saat mencari informasi baru di internet?",
+    "category": "Research Style",
+    "options": [
+      {
+        "text": "Membaca paper riset ilmiah, eksperimen notebook, dan dokumentasi algoritma.",
+        "scores": {
+          "ai": 3,
+          "data": 2
+        }
+      },
+      {
+        "text": "Melihat studi kasus design sprint, Figma prototypes, dan heuristik UX.",
+        "scores": {
+          "uiux": 3
+        }
+      },
+      {
+        "text": "Menganalisis RFC protokol internet, CVE database keamanan, dan writeup exploit.",
+        "scores": {
+          "cyber": 3
+        }
+      },
+      {
+        "text": "Mencari benchmark performa server, live architecture diagram, dan repo GitHub.",
+        "scores": {
+          "web": 2,
+          "cloud": 2
+        }
+      }
+    ]
+  },
+  {
+    "id": 13,
+    "question": "Apa tujuan karier jangka panjang yang paling memotivasi Anda?",
+    "category": "Career Goal",
+    "options": [
+      {
+        "text": "Menjadi AI Architect yang merancang model fondasi cerdas masa depan.",
+        "scores": {
+          "ai": 3
+        }
+      },
+      {
+        "text": "Menjadi Lead Full-Stack Engineer yang membangun platform web dari nol.",
+        "scores": {
+          "web": 3
+        }
+      },
+      {
+        "text": "Menjadi Chief Information Security Officer (CISO) yang menjaga data penting.",
+        "scores": {
+          "cyber": 3
+        }
+      },
+      {
+        "text": "Menjadi Cloud Solutions Architect yang mengelola armada infrastruktur global.",
+        "scores": {
+          "cloud": 3
+        }
+      }
+    ]
+  },
+  {
+    "id": 14,
+    "question": "Bagaimana perasaan Anda ketika menemukan sebuah bug yang sangat tersembunyi?",
+    "category": "Troubleshooting",
+    "options": [
+      {
+        "text": "Sangat puas! Mendedikasikan waktu mereproduksi bug hingga tuntas adalah keahlian saya.",
+        "scores": {
+          "qa": 3,
+          "cyber": 1
+        }
+      },
+      {
+        "text": "Segera menganalisis log server dan metrik latensi untuk root cause analysis.",
+        "scores": {
+          "cloud": 2,
+          "web": 2
+        }
+      },
+      {
+        "text": "Memeriksa dataset pelatihan apakah ada data beracun atau outlier.",
+        "scores": {
+          "ai": 2,
+          "data": 2
+        }
+      },
+      {
+        "text": "Mengecek apakah bug tersebut merusak usability atau membuat bingung pengguna.",
+        "scores": {
+          "uiux": 2
+        }
+      }
+    ]
+  },
+  {
+    "id": 15,
+    "question": "Apakah Anda lebih menyukai pekerjaan yang bersifat visual atau logis murni?",
+    "category": "Cognitive Style",
+    "options": [
+      {
+        "text": "Murni logika, abstraksi matematika, dan penalaran formal.",
+        "scores": {
+          "ai": 2,
+          "web": 2,
+          "cyber": 2
+        }
+      },
+      {
+        "text": "Kombinasi seimbang: menyusun visual yang menarik dengan logika state di baliknya.",
+        "scores": {
+          "web": 3,
+          "mobile": 2
+        }
+      },
+      {
+        "text": "Mayoritas visual: hierarki tipografi, psikologi warna, dan kenyamanan mata.",
+        "scores": {
+          "uiux": 3
+        }
+      },
+      {
+        "text": "Arsitektur sistemik: alur aliran data antar server dan service mesh.",
+        "scores": {
+          "cloud": 3,
+          "data": 2
+        }
+      }
+    ]
+  },
+  {
+    "id": 16,
+    "question": "Dalam mengolah data, apa yang paling Anda sukai?",
+    "category": "Data Handling",
+    "options": [
+      {
+        "text": "Pembersihan data, query SQL rumit, dan pembentukan data warehouse.",
+        "scores": {
+          "data": 3
+        }
+      },
+      {
+        "text": "Memanfaatkan data untuk melatih jaringan saraf tiruan.",
+        "scores": {
+          "ai": 3
+        }
+      },
+      {
+        "text": "Menampilkan data secara real-time via WebSockets pada aplikasi pengguna.",
+        "scores": {
+          "web": 2,
+          "mobile": 2
+        }
+      },
+      {
+        "text": "Mengamankan data saat transit dan saat disimpan.",
+        "scores": {
+          "cyber": 3
+        }
+      }
+    ]
+  },
+  {
+    "id": 17,
+    "question": "Bagaimana pandangan Anda tentang pengujian otomatis (Automated Testing)?",
+    "category": "Testing Philosophy",
+    "options": [
+      {
+        "text": "Sangat esensial; unit test, integration test, dan end-to-end test harus 100% lulus.",
+        "scores": {
+          "qa": 3
+        }
+      },
+      {
+        "text": "Penting dalam CI/CD pipeline agar deployment otomatis berjalan mulus.",
+        "scores": {
+          "cloud": 2,
+          "web": 2
+        }
+      },
+      {
+        "text": "Perlu ditambah dengan uji penetrasi dan audit keamanan dependensi.",
+        "scores": {
+          "cyber": 2
+        }
+      },
+      {
+        "text": "Perlu uji kegunaan (usability testing) langsung pada pengguna manusia nyata.",
+        "scores": {
+          "uiux": 3
+        }
+      }
+    ]
+  },
+  {
+    "id": 18,
+    "question": "Jika Anda diminta membuat fitur Chatbot Cerdas, apa aspek pertama yang Anda eksplorasi?",
+    "category": "AI Alignment",
+    "options": [
+      {
+        "text": "Prompt engineering, retrieval-augmented generation (RAG), dan embeddings model.",
+        "scores": {
+          "ai": 3
+        }
+      },
+      {
+        "text": "UI bubble chat yang halus, animasi typing indicator, dan dark mode.",
+        "scores": {
+          "uiux": 2,
+          "web": 1
+        }
+      },
+      {
+        "text": "API streaming backend dengan WebSocket/SSE dan autentikasi token pengguna.",
+        "scores": {
+          "web": 2
+        }
+      },
+      {
+        "text": "Pencegahan prompt injection, kebocoran data rahasia, dan guardrails keamanan.",
+        "scores": {
+          "cyber": 2,
+          "ai": 1
+        }
+      }
+    ]
+  },
+  {
+    "id": 19,
+    "question": "Ketika melihat aplikasi mobile di smartphone Anda, hal apa yang sering Anda kritisi?",
+    "category": "Mobile Sense",
+    "options": [
+      {
+        "text": "Gerakan transisi layar yang kaku, animasi lemot, atau konsumsi memori tinggi.",
+        "scores": {
+          "mobile": 3,
+          "uiux": 1
+        }
+      },
+      {
+        "text": "Izin akses privasi yang terlalu banyak tanpa alasan wajar.",
+        "scores": {
+          "cyber": 3
+        }
+      },
+      {
+        "text": "Banyak tombol error atau aplikasi tiba-tiba crash tanpa pesan yang jelas.",
+        "scores": {
+          "qa": 3
+        }
+      },
+      {
+        "text": "Tampilan responsif yang berantakan ketika dibuka di tablet atau layar lipat.",
+        "scores": {
+          "uiux": 2,
+          "mobile": 2
+        }
+      }
+    ]
+  },
+  {
+    "id": 20,
+    "question": "Apa pandangan Anda tentang sistem operasi Linux?",
+    "category": "OS & Systems",
+    "options": [
+      {
+        "text": "Sangat suka; terminal bash, SSH, manajemen proses, dan file permission adalah rumah saya.",
+        "scores": {
+          "cloud": 3,
+          "cyber": 2
+        }
+      },
+      {
+        "text": "Saya menggunakannya sebagai environment docker container untuk hosting web/database.",
+        "scores": {
+          "web": 2,
+          "cloud": 1
+        }
+      },
+      {
+        "text": "Saya menggunakannya terutama untuk menjalankan skrip Python data science.",
+        "scores": {
+          "data": 2,
+          "ai": 1
+        }
+      },
+      {
+        "text": "Saya lebih terbiasa dengan lingkungan macOS atau Windows untuk mendesain di Figma.",
+        "scores": {
+          "uiux": 2
+        }
+      }
+    ]
+  },
+  {
+    "id": 21,
+    "question": "Ketika bekerja dengan database, apa prioritas utama Anda?",
+    "category": "Database Priority",
+    "options": [
+      {
+        "text": "Mendesain skema relasional ter-normalisasi, foreign keys, dan indeks cepat.",
+        "scores": {
+          "web": 2,
+          "data": 2
+        }
+      },
+      {
+        "text": "Memanfaatkan vector database untuk pencarian semantik embedding AI.",
+        "scores": {
+          "ai": 3
+        }
+      },
+      {
+        "text": "Mengamankan privilege akses root, enkripsi database, dan audit query anomali.",
+        "scores": {
+          "cyber": 3
+        }
+      },
+      {
+        "text": "Replikasi multi-region, automated backup, dan high availability cloud cluster.",
+        "scores": {
+          "cloud": 3
+        }
+      }
+    ]
+  },
+  {
+    "id": 22,
+    "question": "Bagaimana sikap Anda terhadap perubahan teknologi yang sangat cepat?",
+    "category": "Adaptability",
+    "options": [
+      {
+        "text": "Sangat antusias mencoba library AI dan framework model baru setiap minggu.",
+        "scores": {
+          "ai": 3
+        }
+      },
+      {
+        "text": "Fokus pada prinsip dasar arsitektur web yang kokoh, adaptif terhadap framework baru.",
+        "scores": {
+          "web": 2
+        }
+      },
+      {
+        "text": "Mengamati tren celah keamanan baru yang muncul di dunia siber.",
+        "scores": {
+          "cyber": 3
+        }
+      },
+      {
+        "text": "Mempelajari evolusi pola interaksi antarmuka pengguna pada perangkat modern.",
+        "scores": {
+          "uiux": 2,
+          "mobile": 1
+        }
+      }
+    ]
+  },
+  {
+    "id": 23,
+    "question": "Jika sebuah sistem tiba-tiba mengalami lonjakan trafik 100x lipat, apa yang Anda lakukan?",
+    "category": "Scalability",
+    "options": [
+      {
+        "text": "Mengaktifkan auto-scaling group, load balancer, dan CDN caching.",
+        "scores": {
+          "cloud": 3
+        }
+      },
+      {
+        "text": "Mengoptimalkan kueri backend, koneksi database pooling, dan kompresi payload.",
+        "scores": {
+          "web": 2
+        }
+      },
+      {
+        "text": "Memastikan lonjakan trafik bukan serangan DDoS atau brute-force bot.",
+        "scores": {
+          "cyber": 3
+        }
+      },
+      {
+        "text": "Menjalankan stress test beban untuk mengukur breaking point sistem.",
+        "scores": {
+          "qa": 3
+        }
+      }
+    ]
+  },
+  {
+    "id": 24,
+    "question": "Apa yang membuat sebuah aplikasi dapat disebut Hebat menurut Anda?",
+    "category": "Product Definition",
+    "options": [
+      {
+        "text": "Antarmukanya begitu natural dan elegan sehingga pengguna tidak perlu tutorial.",
+        "scores": {
+          "uiux": 3
+        }
+      },
+      {
+        "text": "Memiliki fitur rekomendasi cerdas yang terasa seperti membaca kebutuhan pengguna.",
+        "scores": {
+          "ai": 3
+        }
+      },
+      {
+        "text": "Kecepatan loading secepat kilat, handal, dan fitur berfungsi tanpa cela.",
+        "scores": {
+          "web": 2,
+          "qa": 2
+        }
+      },
+      {
+        "text": "Data pengguna terjaga aman 100% dan tidak pernah bisa ditembus hacker.",
+        "scores": {
+          "cyber": 3
+        }
+      }
+    ]
+  },
+  {
+    "id": 25,
+    "question": "Dalam proyek open-source, kontribusi seperti apa yang paling ingin Anda berikan?",
+    "category": "Open Source",
+    "options": [
+      {
+        "text": "Menulis unit tests dan mendokumentasikan bug laporan kualitas perangkat lunak.",
+        "scores": {
+          "qa": 3
+        }
+      },
+      {
+        "text": "Memperbaiki vulnerabilities dan memperketat security policy repo.",
+        "scores": {
+          "cyber": 3
+        }
+      },
+      {
+        "text": "Menambahkan fitur baru pada core engine framework web atau mobile.",
+        "scores": {
+          "web": 2,
+          "mobile": 2
+        }
+      },
+      {
+        "text": "Merilis pre-trained weights model atau dataset kurasi untuk komunitas.",
+        "scores": {
+          "ai": 3,
+          "data": 2
+        }
+      }
+    ]
+  },
+  {
+    "id": 26,
+    "question": "Bagaimana Anda memverifikasi bahwa sebuah kode baru siap dipublikasikan ke production?",
+    "category": "Verification Culture",
+    "options": [
+      {
+        "text": "Semua skenario edge case telah diuji dengan regression test suite yang komprehensif.",
+        "scores": {
+          "qa": 3
+        }
+      },
+      {
+        "text": "Sudah melalui vulnerability scanning, dependency check, dan lolos code review.",
+        "scores": {
+          "cyber": 2,
+          "web": 1
+        }
+      },
+      {
+        "text": "Lolos pipeline build otomatis, container teruji di staging environment identik.",
+        "scores": {
+          "cloud": 3
+        }
+      },
+      {
+        "text": "Sudah dilakukan usability review dan feedback pengguna awal menunjukkan kepuasan.",
+        "scores": {
+          "uiux": 3
+        }
+      }
+    ]
+  },
+  {
+    "id": 27,
+    "question": "Ketika Anda melihat diagram jaringan kabel, router, dan server, apa yang Anda rasakan?",
+    "category": "Networking & Infra",
+    "options": [
+      {
+        "text": "Tertarik memahami routing IP, subnetting, DNS, dan paket data TCP/IP.",
+        "scores": {
+          "cloud": 3,
+          "cyber": 2
+        }
+      },
+      {
+        "text": "Lebih tertarik pada protokol application layer (HTTP/3, WebSockets, gRPC).",
+        "scores": {
+          "web": 2
+        }
+      },
+      {
+        "text": "Melihatnya sebagai jalur distribusi data analitik besar antar cluster.",
+        "scores": {
+          "data": 2
+        }
+      },
+      {
+        "text": "Kurang tertarik, saya lebih bersemangat pada layer visual antarmuka pengguna.",
+        "scores": {
+          "uiux": 2
+        }
+      }
+    ]
+  },
+  {
+    "id": 28,
+    "question": "Apa aspek yang paling memuaskan saat Anda menyelesaikan suatu proyek coding?",
+    "category": "Satisfaction",
+    "options": [
+      {
+        "text": "Melihat pengguna nyata senang dan lancar menggunakan antarmuka buatan saya.",
+        "scores": {
+          "uiux": 2,
+          "web": 2,
+          "mobile": 2
+        }
+      },
+      {
+        "text": "Melihat metrik model AI menghasilkan akurasi tinggi pada data tak terlihat.",
+        "scores": {
+          "ai": 3
+        }
+      },
+      {
+        "text": "Mengetahui bahwa arsitektur yang saya buat tahan banting dan tak terkalahkan.",
+        "scores": {
+          "cloud": 2,
+          "cyber": 2
+        }
+      },
+      {
+        "text": "Menyaksikan seluruh ratusan test cases berstatus HIJAU (PASS).",
+        "scores": {
+          "qa": 3
+        }
+      }
+    ]
+  },
+  {
+    "id": 29,
+    "question": "Apakah Anda lebih menyukai pekerjaan berulang yang dapat diotomasi atau riset eksploratif?",
+    "category": "Work Nature",
+    "options": [
+      {
+        "text": "Riset eksperimental: mencoba berbagai arsitektur model dan optimasi hyperparameter.",
+        "scores": {
+          "ai": 3,
+          "data": 2
+        }
+      },
+      {
+        "text": "Otomasi sistem: menulis skrip agar deployment dan pengujian berjalan otomatis.",
+        "scores": {
+          "cloud": 3,
+          "qa": 2
+        }
+      },
+      {
+        "text": "Eksplorasi user research: wawancara pengguna dan eksperimen usability testing.",
+        "scores": {
+          "uiux": 3
+        }
+      },
+      {
+        "text": "Membangun fitur bisnis nyata: menyusun endpoint, halaman web, dan fungsionalitas produk.",
+        "scores": {
+          "web": 3,
+          "mobile": 2
+        }
+      }
+    ]
+  },
+  {
+    "id": 30,
+    "question": "Sebagai kesimpulan, apa yang paling Anda inginkan dari perjalanan belajar di DEVORA?",
+    "category": "Final Aspiration",
+    "options": [
+      {
+        "text": "Menguasai teknologi AI terkini untuk menciptakan sistem cerdas yang berdampak luas.",
+        "scores": {
+          "ai": 3
+        }
+      },
+      {
+        "text": "Menjadi Software Engineer handal yang mampu membangun aplikasi web/mobile end-to-end.",
+        "scores": {
+          "web": 3,
+          "mobile": 1
+        }
+      },
+      {
+        "text": "Menjadi pakar keamanan siber yang dipercaya menjaga benteng pertahanan digital.",
+        "scores": {
+          "cyber": 3
+        }
+      },
+      {
+        "text": "Menguasai data & cloud untuk menggerakkan infrastruktur teknologi modern skala besar.",
+        "scores": {
+          "cloud": 2,
+          "data": 2
+        }
+      }
+    ]
+  }
+]

@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { Navbar } from '@/components/layout/Navbar';
 import { Footer } from '@/components/layout/Footer';
 import { ShieldCheck, Search, Award, Download, CheckCircle, XCircle, Loader2 } from 'lucide-react';
-import { downloadCertificateInBrowser } from '@/lib/certificate-pdf';
+import { downloadCertificateInBrowser, downloadCertificateImage } from '@/lib/certificate-pdf';
 
 export default function CertificateVerificationPage() {
   const [certId, setCertId] = useState('');
@@ -179,12 +179,26 @@ export default function CertificateVerificationPage() {
             </div>
 
             <div className="border-t border-white/10 pt-6 flex flex-wrap items-center justify-between gap-4">
-              <button
-                onClick={() => downloadCertificateInBrowser(result.certificate)}
-                className="btn-neo-light text-xs py-2 px-6 flex items-center gap-2"
-              >
-                <Download className="w-3.5 h-3.5" /> Download Verifiable PDF
-              </button>
+              <div className="flex flex-wrap items-center gap-2">
+                <button
+                  onClick={() => downloadCertificateInBrowser(result.certificate)}
+                  className="btn-neo-light text-xs py-2 px-5 flex items-center gap-1.5"
+                >
+                  <Download className="w-3.5 h-3.5" /> Unduh PDF
+                </button>
+                <button
+                  onClick={() => downloadCertificateImage(result.certificate, 'png')}
+                  className="btn-neo-outline text-xs py-2 px-4 flex items-center gap-1.5 text-gray-300 hover:text-white"
+                >
+                  Unduh PNG
+                </button>
+                <button
+                  onClick={() => downloadCertificateImage(result.certificate, 'jpg')}
+                  className="btn-neo-outline text-xs py-2 px-4 flex items-center gap-1.5 text-gray-300 hover:text-white"
+                >
+                  Unduh JPG
+                </button>
+              </div>
               <span className="text-[10px] font-mono text-gray-500">
                 VERIFIED VIA DEVORA PUBLIC REGISTRY
               </span>
