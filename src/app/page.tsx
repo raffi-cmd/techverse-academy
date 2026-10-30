@@ -92,7 +92,7 @@ export default function HomePage() {
                   <div className="w-56 h-36 rounded-full bg-gradient-to-r from-gray-900 via-gray-800 to-black border-2 border-white/40 shadow-2xl flex items-center justify-center relative overflow-hidden mb-6">
                     <div className="absolute inset-x-0 h-1 bg-gradient-to-r from-cyan-400 via-indigo-500 to-purple-500 top-1/2 -translate-y-1/2 blur-sm" />
                     <div className="w-48 h-8 rounded-full bg-black/80 border border-white/20 flex items-center justify-center">
-                      <span className="text-[10px] font-mono tracking-widest text-cyan-400">TECHVERSE // SPATIAL OS</span>
+                      <span className="text-[10px] font-mono tracking-widest text-cyan-400">DEVORA // PLATFORM OS</span>
                     </div>
                   </div>
 
@@ -162,7 +162,7 @@ export default function HomePage() {
               </div>
 
               <p className="text-gray-400 text-sm md:text-base leading-relaxed mb-6 max-w-xl">
-                TechVerse Academy exists where the boundaries between foundational computing, enterprise software systems, and AI engineering dissolve.
+                DEVORA exists where the boundaries between foundational computing, enterprise software systems, and AI engineering dissolve.
                 We reject superficial video overviews in favor of deep, 50-chapter structured technical pathways with code verification and verifiable completion credentials.
               </p>
 
@@ -260,14 +260,14 @@ export default function HomePage() {
       </section>
 
       {/* =========================================================
-          SECTION 4: LIMITLESS POSSIBILITIES WITH TECHVERSE
+          SECTION 4: LIMITLESS POSSIBILITIES WITH DEVORA
           Matches the bento card section from the reference image
           ========================================================= */}
       <section className="py-24 md:py-36 bg-[#07070a]">
         <div className="max-w-7xl mx-auto px-6">
           <h2 className="font-display-title text-3xl sm:text-6xl text-white mb-8">
             LIMITLESS POSSIBILITIES<br />
-            WITH TECHVERSE
+            WITH DEVORA
           </h2>
 
           <div className="flex items-center gap-6 text-xs font-semibold text-gray-400 mb-10 border-b border-white/5 pb-4">
@@ -293,7 +293,7 @@ export default function HomePage() {
                   How AI & Full-Stack Systems are Transforming Education
                 </h3>
                 <p className="text-xs text-gray-400 leading-relaxed mb-6">
-                  Traditional academies rely on passive video watching. TechVerse Academy deploys an active, chapter-by-chapter progression engine where every learner solves code problems, passes server-graded assessments, and unlocks verifiable cryptographic credentials.
+                  Traditional academies rely on passive video watching. DEVORA deploys an active, chapter-by-chapter progression engine where every learner solves code problems, passes server-graded assessments, and unlocks verifiable cryptographic credentials.
                 </p>
                 <Link href="/pathways" className="inline-flex items-center gap-2 text-xs font-semibold text-white bg-white/10 hover:bg-white/20 px-5 py-2.5 rounded-full transition-colors">
                   Explore Catalog
@@ -325,7 +325,7 @@ export default function HomePage() {
                 THE FUTURE
               </h2>
               <p className="text-xs md:text-sm text-gray-400 leading-relaxed mb-8">
-                Hear from software engineers, university students, and career pivoters who transformed their technical capabilities through TechVerse&apos;s 50-chapter curriculum.
+                Hear from software engineers, university students, and career pivoters who transformed their technical capabilities through DEVORA&apos;s 50-chapter curriculum.
               </p>
               <div className="w-24 h-1 bg-gradient-to-r from-cyan-400 to-indigo-600 rounded-full" />
             </div>
@@ -334,7 +334,7 @@ export default function HomePage() {
             <div className="lg:col-span-7 space-y-4">
               {[
                 {
-                  quote: "TechVerse completely transformed how our engineering team trains new developers. The 50-chapter depth is unmatched.",
+                  quote: "DEVORA completely transformed how our engineering team trains new developers. The 50-chapter depth is unmatched.",
                   author: "James Field",
                   role: "Staff Platform Engineer",
                   initials: "JF"
@@ -346,7 +346,7 @@ export default function HomePage() {
                   initials: "SR"
                 },
                 {
-                  quote: "I've tried every online coding platform. Nothing matches TechVerse's combination of structured depth and verifiable credentials.",
+                  quote: "I've tried every online coding platform. Nothing matches DEVORA's combination of structured depth and verifiable credentials.",
                   author: "Mark Trevor",
                   role: "Full-Stack Developer",
                   initials: "MT"

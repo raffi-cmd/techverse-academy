@@ -10,13 +10,18 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "TechVerse Academy — Master IT Skills, Earn Certificates",
+  title: "DEVORA — Learn. Build. Prove. | IT Learning & Career Platform",
   description:
-    "A professional IT learning platform with structured pathways, hands-on projects, and verifiable completion certificates across 60+ technology disciplines.",
+    "Devora is an IT Learning & Career Platform that helps learners develop practical technology skills through structured learning pathways, comprehensive assessments, and verified credentials.",
+  icons: {
+    icon: "/techverse-academy/devora-logo.png",
+    apple: "/techverse-academy/devora-logo.png",
+  },
   keywords: [
+    "DEVORA",
     "IT learning",
     "programming courses",
-    "tech certification",
+    "tech career",
     "coding education",
     "software development",
     "AI engineering",

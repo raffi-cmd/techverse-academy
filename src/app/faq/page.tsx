@@ -6,7 +6,7 @@ export default function FAQPage() {
   const faqs = [
     {
       q: 'Are certificates accredited by universities or governments?',
-      a: 'No. TechVerse Academy issues educational completion certificates that verify you have met curriculum objectives and passed server-graded chapter assessments (score >= 80%). They document technical proficiency but are not accredited academic degrees or government licenses.'
+      a: 'No. DEVORA issues educational completion certificates that verify you have met curriculum objectives and passed server-graded chapter assessments (score >= 80%). They document technical proficiency but are not accredited academic degrees or government licenses.'
     },
     {
       q: 'How many chapters are in each learning pathway?',

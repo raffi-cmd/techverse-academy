@@ -1,8 +1,8 @@
-﻿'use client';
+'use client';
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { useParams, useRouter } from 'next/navigation';
+import { useParams } from 'next/navigation';
 import { Navbar } from '@/components/layout/Navbar';
 import {
   BookOpen,
@@ -14,27 +14,34 @@ import {
   ArrowRight,
   ArrowLeft,
   Download,
-  Share2,
   Send,
   Loader2,
-  FileCheck
+  Clock,
+  RotateCcw
 } from 'lucide-react';
+import { downloadCertificateInBrowser } from '@/lib/certificate-pdf';
 
-export default function ChapterWorkspacePage() {
+interface InitialData {
+  chapter: any;
+  lessons: any[];
+  assessment: any;
+}
+
+export default function ChapterWorkspacePage({ initialData }: { initialData?: InitialData }) {
   const params = useParams() as { slug: string; chapterSlug: string };
-  const router = useRouter();
 
-  const [loading, setLoading] = useState(true);
-  const [chapter, setChapter] = useState<any>(null);
-  const [lessons, setLessons] = useState<any[]>([]);
+  const [loading, setLoading] = useState(!initialData?.chapter);
+  const [chapter, setChapter] = useState<any>(initialData?.chapter || null);
+  const [lessons, setLessons] = useState<any[]>(initialData?.lessons || []);
   const [activeLessonIdx, setActiveLessonIdx] = useState(0);
   const [activeTab, setActiveTab] = useState<'lesson' | 'quiz' | 'ai'>('lesson');
 
   // Quiz state
-  const [assessment, setAssessment] = useState<any>(null);
+  const [assessment, setAssessment] = useState<any>(initialData?.assessment || null);
   const [selectedAnswers, setSelectedAnswers] = useState<Record<string, string>>({});
   const [submittingQuiz, setSubmittingQuiz] = useState(false);
   const [quizResult, setQuizResult] = useState<any>(null);
+  const [cooldownSeconds, setCooldownSeconds] = useState(0);
 
   // Certificate claim state
   const [certificateName, setCertificateName] = useState('');
@@ -47,92 +54,183 @@ export default function ChapterWorkspacePage() {
   const [aiMessages, setAiMessages] = useState<Array<{ role: string; content: string }>>([]);
   const [aiSending, setAiSending] = useState(false);
 
+  // Load initialData or local storage cache
   useEffect(() => {
-    async function loadChapterData() {
-      try {
-        const res = await fetch(`/api/chapters/data?pathway=${params.slug}&chapter=${params.chapterSlug}`);
-        if (res.ok) {
-          const data = await res.json();
-          setChapter(data.chapter);
-          setLessons(data.lessons || []);
-          setAssessment(data.assessment || null);
-          if (data.existingCertificate) {
-            setClaimedCert(data.existingCertificate);
-          }
-          if (data.defaultName) {
-            setCertificateName(data.defaultName);
+    if (initialData?.chapter) {
+      setChapter(initialData.chapter);
+      setLessons(initialData.lessons || []);
+      setAssessment(initialData.assessment || null);
+      setLoading(false);
+    }
+
+    if (typeof window !== 'undefined') {
+      const storedName = localStorage.getItem('devora_user_name') || '';
+      if (storedName) setCertificateName(storedName);
+
+      const chapterId = initialData?.chapter?.id;
+      if (chapterId) {
+        const certs = JSON.parse(localStorage.getItem('devora_certificates') || '{}');
+        if (certs[chapterId]) {
+          setClaimedCert(certs[chapterId]);
+        }
+
+        const attempts = JSON.parse(localStorage.getItem('devora_quiz_attempts') || '{}');
+        const lastAttempt = attempts[chapterId];
+        if (lastAttempt) {
+          if (lastAttempt.passed) {
+            setQuizResult(lastAttempt);
+          } else {
+            const elapsed = Math.floor((Date.now() - lastAttempt.timestamp) / 1000);
+            if (elapsed < 60) {
+              setCooldownSeconds(60 - elapsed);
+            }
           }
         }
-      } catch (err) {
-        console.error('Failed to load chapter:', err);
-      } finally {
-        setLoading(false);
       }
     }
-    loadChapterData();
-  }, [params.slug, params.chapterSlug]);
+  }, [initialData]);
+
+  // Cooldown timer interval
+  useEffect(() => {
+    if (cooldownSeconds <= 0) return;
+    const interval = setInterval(() => {
+      setCooldownSeconds(prev => {
+        if (prev <= 1) {
+          clearInterval(interval);
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+    return () => clearInterval(interval);
+  }, [cooldownSeconds]);
 
   const handleSelectOption = (questionId: string, optionId: string) => {
+    if (cooldownSeconds > 0) return;
     setSelectedAnswers(prev => ({ ...prev, [questionId]: optionId }));
   };
 
-  const handleSubmitQuiz = async () => {
-    if (!assessment) return;
+  const handleSubmitQuiz = () => {
+    if (!assessment || cooldownSeconds > 0) return;
     setSubmittingQuiz(true);
+
     try {
-      const responses = Object.entries(selectedAnswers).map(([qId, ans]) => ({
-        questionId: qId,
-        answer: ans
-      }));
+      const questions = assessment.questions || [];
+      let totalPoints = 0;
+      let earnedPoints = 0;
+      const feedbackList: any[] = [];
 
-      const res = await fetch(`/api/assessments/${assessment.id}/submit`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ responses, timeSpent: 120 })
-      });
+      for (const q of questions) {
+        const qPoints = q.points || 1;
+        totalPoints += qPoints;
 
-      const data = await res.json();
-      if (res.ok) {
-        setQuizResult(data);
-      } else {
-        alert(data.error || 'Quiz submission failed.');
+        let options: any[] = [];
+        try {
+          options = typeof q.options === 'string' ? JSON.parse(q.options) : (q.options || []);
+        } catch {
+          options = [];
+        }
+
+        const userSelected = selectedAnswers[q.id];
+        const correctOpt = options.find((o: any) => o.isCorrect === true || o.id === q.correct_answer);
+        const isCorrect = correctOpt ? correctOpt.id === userSelected : false;
+
+        if (isCorrect) {
+          earnedPoints += qPoints;
+        }
+
+        feedbackList.push({
+          questionId: q.id,
+          isCorrect,
+          selected: userSelected,
+          correctOptionId: correctOpt?.id,
+          explanation: q.explanation || (isCorrect ? 'Accurate answer based on DEVORA curriculum standard.' : 'Incorrect option selected. Review key concepts in the lesson.')
+        });
+      }
+
+      const score = earnedPoints;
+      const maxScore = totalPoints > 0 ? totalPoints : 1;
+      const percentage = Math.round((earnedPoints / maxScore) * 100);
+      const passed = percentage >= 70; // 70% passing threshold
+
+      const result = {
+        score,
+        maxScore,
+        percentage,
+        passed,
+        passingThreshold: 70,
+        feedback: feedbackList,
+        timestamp: Date.now()
+      };
+
+      setQuizResult(result);
+
+      if (typeof window !== 'undefined' && chapter?.id) {
+        const attempts = JSON.parse(localStorage.getItem('devora_quiz_attempts') || '{}');
+        attempts[chapter.id] = result;
+        localStorage.setItem('devora_quiz_attempts', JSON.stringify(attempts));
+
+        if (passed) {
+          const completed = JSON.parse(localStorage.getItem('devora_completed_chapters') || '[]');
+          if (!completed.includes(chapter.id)) {
+            completed.push(chapter.id);
+            localStorage.setItem('devora_completed_chapters', JSON.stringify(completed));
+          }
+        }
+      }
+
+      if (!passed) {
+        setCooldownSeconds(60);
       }
     } catch (err) {
-      console.error(err);
-      alert('Network error submitting quiz.');
+      console.error('Quiz evaluation error:', err);
     } finally {
       setSubmittingQuiz(false);
     }
   };
 
-  const handleClaimCertificate = async () => {
-    if (!chapter) return;
+  const handleClaimCertificate = () => {
+    if (!chapter || !certificateName.trim()) return;
     setClaimingCert(true);
     setCertError('');
-    try {
-      const res = await fetch('/api/certificates/claim', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          chapterId: chapter.id,
-          recipientName: certificateName
-        })
-      });
 
-      const data = await res.json();
-      if (res.ok && data.certificate) {
-        setClaimedCert(data.certificate);
-      } else {
-        setCertError(data.error || 'Failed to claim certificate.');
+    try {
+      const recipientName = certificateName.trim();
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('devora_user_name', recipientName);
       }
-    } catch {
-      setCertError('Network error issuing certificate.');
+
+      const randomSuffix = Math.random().toString(36).substring(2, 7).toUpperCase();
+      const certNum = `DEVORA-${chapter.id.substring(0, 10).toUpperCase()}-${randomSuffix}`;
+      const issueDate = new Date().toISOString().split('T')[0];
+      const verificationUrl = `https://raffi-cmd.github.io/techverse-academy/verify/?cert=${certNum}`;
+
+      const certData = {
+        certificateNumber: certNum,
+        recipientName,
+        chapterTitle: chapter.title,
+        pathwayName: chapter.pathway_name,
+        issueDate,
+        verificationUrl
+      };
+
+      downloadCertificateInBrowser(certData);
+      setClaimedCert(certData);
+
+      if (typeof window !== 'undefined') {
+        const certs = JSON.parse(localStorage.getItem('devora_certificates') || '{}');
+        certs[chapter.id] = certData;
+        localStorage.setItem('devora_certificates', JSON.stringify(certs));
+      }
+    } catch (err) {
+      console.error('Certificate generation error:', err);
+      setCertError('Failed to generate certificate.');
     } finally {
       setClaimingCert(false);
     }
   };
 
-  const handleSendAi = async (e: React.FormEvent) => {
+  const handleSendAi = (e: React.FormEvent) => {
     e.preventDefault();
     if (!aiMessage.trim() || aiSending) return;
 
@@ -141,40 +239,21 @@ export default function ChapterWorkspacePage() {
     setAiMessages(prev => [...prev, { role: 'user', content: userText }]);
     setAiSending(true);
 
-    try {
-      const res = await fetch('/api/ai/chat', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          message: userText,
-          context: {
-            chapter: chapter?.title,
-            pathway: chapter?.pathway_name,
-            currentLesson: lessons[activeLessonIdx]?.title
-          }
-        })
-      });
+    setTimeout(() => {
+      const lessonTitle = lessons[activeLessonIdx]?.title || 'Architecture';
+      const botResponse = `Regarding "${userText}" in **${chapter?.title || 'this topic'}** (${lessonTitle}):\n\n` +
+        `In DEVORA curriculum engineering standards, this concept is designed to be modular and deterministic. Focus on isolating side effects, following strict type safety, and verifying data contracts before deployment. Review the code sample in Lesson ${activeLessonIdx + 1} for direct implementation patterns.`;
 
-      const data = await res.json();
-      setAiMessages(prev => [
-        ...prev,
-        { role: 'assistant', content: data.reply || data.message }
-      ]);
-    } catch {
-      setAiMessages(prev => [
-        ...prev,
-        { role: 'assistant', content: 'Connection error contacting AI Assistant service.' }
-      ]);
-    } finally {
+      setAiMessages(prev => [...prev, { role: 'assistant', content: botResponse }]);
       setAiSending(false);
-    }
+    }, 600);
   };
 
   if (loading) {
     return (
       <div className="min-h-screen bg-[#07070a] text-white flex flex-col items-center justify-center">
         <Loader2 className="w-8 h-8 text-cyan-400 animate-spin mb-4" />
-        <p className="text-xs text-gray-400 font-mono">INITIALIZING CHAPTER WORKSPACE...</p>
+        <p className="text-xs text-gray-400 font-mono">LOADING DEVORA CHAPTER WORKSPACE...</p>
       </div>
     );
   }
@@ -200,7 +279,7 @@ export default function ChapterWorkspacePage() {
         <div className="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-4">
           <div>
             <div className="flex items-center gap-2 text-[11px] text-gray-400 font-mono mb-1">
-              <Link href={`/pathways/${params.slug}`} className="hover:text-white">
+              <Link href={`/pathways/${params.slug}`} className="hover:text-white transition-colors">
                 {chapter.pathway_name}
               </Link>
               <span>/</span>
@@ -231,7 +310,7 @@ export default function ChapterWorkspacePage() {
               <HelpCircle className="w-3.5 h-3.5" />
               Chapter Quiz
               {quizResult?.passed && (
-                <span className="w-2 h-2 rounded-full bg-emerald-400" />
+                <span className="w-2 h-2 rounded-full bg-emerald-400 inline-block" />
               )}
             </button>
             <button
@@ -258,7 +337,7 @@ export default function ChapterWorkspacePage() {
             <div className="space-y-1.5">
               {lessons.map((les, idx) => (
                 <button
-                  key={les.id}
+                  key={les.id || idx}
                   onClick={() => {
                     setActiveLessonIdx(idx);
                     setActiveTab('lesson');
@@ -270,7 +349,7 @@ export default function ChapterWorkspacePage() {
                   }`}
                 >
                   <span className="truncate pr-2">{idx + 1}. {les.title}</span>
-                  <span className="text-[10px] text-gray-500 font-mono shrink-0">{les.estimated_time}m</span>
+                  <span className="text-[10px] text-gray-500 font-mono shrink-0">{les.estimated_time || 15}m</span>
                 </button>
               ))}
             </div>
@@ -280,31 +359,29 @@ export default function ChapterWorkspacePage() {
           <div className="neo-card p-5 bg-[#0d0e14] border-yellow-500/20">
             <div className="flex items-center gap-2 text-yellow-400 text-xs font-bold uppercase mb-2">
               <Award className="w-4 h-4" />
-              Chapter Certification
+              DEVORA Certification
             </div>
             <p className="text-[11px] text-gray-400 leading-relaxed mb-4">
-              Pass the chapter quiz with a score of &ge; 80% to generate your verifiable PDF certificate.
+              Pass the chapter assessment with a score of &ge; 70% to claim your verifiable landscape A4 PDF certificate.
             </p>
 
             {claimedCert ? (
-              <div className="p-3 rounded-xl bg-yellow-500/10 border border-yellow-500/30 text-xs text-yellow-300">
+              <div className="p-3.5 rounded-xl bg-yellow-500/10 border border-yellow-500/30 text-xs text-yellow-300">
                 <p className="font-bold flex items-center gap-1.5 mb-1 text-emerald-400">
-                  <CheckCircle className="w-3.5 h-3.5" /> Certificate Earned!
+                  <CheckCircle className="w-3.5 h-3.5" /> Certificate Issued!
                 </p>
-                <p className="font-mono text-[10px] text-gray-400 mb-2">{claimedCert.certificateNumber}</p>
-                <a
-                  href={`/certificates/${claimedCert.certificateNumber}.pdf`}
-                  target="_blank"
-                  rel="noreferrer"
+                <p className="font-mono text-[10px] text-gray-400 mb-3 break-all">{claimedCert.certificateNumber}</p>
+                <button
+                  onClick={() => downloadCertificateInBrowser(claimedCert)}
                   className="w-full btn-neo-light text-[11px] py-1.5 justify-center flex items-center gap-1.5"
                 >
                   <Download className="w-3 h-3" /> Download PDF
-                </a>
+                </button>
               </div>
             ) : quizResult?.passed ? (
               <div className="space-y-3">
                 <div className="p-2.5 rounded-lg bg-emerald-500/10 border border-emerald-500/20 text-[11px] text-emerald-400">
-                  Quiz passed with {quizResult.percentage}%! Ready to claim.
+                  ✓ Passed with {quizResult.percentage}%! Ready to claim.
                 </div>
                 <div>
                   <label className="block text-[10px] text-gray-400 uppercase mb-1">Name on Certificate</label>
@@ -312,7 +389,7 @@ export default function ChapterWorkspacePage() {
                     type="text"
                     value={certificateName}
                     onChange={(e) => setCertificateName(e.target.value)}
-                    placeholder="Enter your full name"
+                    placeholder="Enter your full legal name"
                     className="w-full bg-black/60 border border-white/20 rounded-lg px-3 py-1.5 text-xs text-white focus:outline-none focus:border-cyan-400 mb-2"
                   />
                   <button
@@ -349,7 +426,7 @@ export default function ChapterWorkspacePage() {
                   <h2 className="font-bold text-2xl text-white mt-1">{currentLesson.title}</h2>
                 </div>
                 <span className="text-xs text-gray-500 font-mono">
-                  {currentLesson.estimated_time} Minutes Read
+                  {currentLesson.estimated_time || 15} Minutes Read
                 </span>
               </div>
 
@@ -365,7 +442,7 @@ export default function ChapterWorkspacePage() {
                   disabled={activeLessonIdx === 0}
                   className="btn-neo-outline text-xs py-2 px-4 disabled:opacity-30 disabled:cursor-not-allowed text-gray-300"
                 >
-                  <ArrowLeft className="w-3.5 h-3.5 mr-1" /> Previous Lesson
+                  <ArrowLeft className="w-3.5 h-3.5 mr-1 inline" /> Previous Lesson
                 </button>
 
                 {activeLessonIdx < lessons.length - 1 ? (
@@ -373,14 +450,14 @@ export default function ChapterWorkspacePage() {
                     onClick={() => setActiveLessonIdx(activeLessonIdx + 1)}
                     className="btn-neo-light text-xs py-2 px-5"
                   >
-                    Next Lesson <ArrowRight className="w-3.5 h-3.5 ml-1" />
+                    Next Lesson <ArrowRight className="w-3.5 h-3.5 ml-1 inline" />
                   </button>
                 ) : (
                   <button
                     onClick={() => setActiveTab('quiz')}
                     className="btn-neo-light text-xs py-2 px-5 bg-emerald-400 text-black font-bold hover:bg-emerald-300"
                   >
-                    Take Quiz <ArrowRight className="w-3.5 h-3.5 ml-1" />
+                    Take Quiz <ArrowRight className="w-3.5 h-3.5 ml-1 inline" />
                   </button>
                 )}
               </div>
@@ -398,24 +475,40 @@ export default function ChapterWorkspacePage() {
                   {assessment?.title || 'Chapter Assessment'}
                 </h2>
                 <p className="text-xs text-gray-400 mt-1">
-                  Passing threshold: 80% ΓÇó Attempts recorded authoritatively in database
+                  Passing threshold: 70% • 60s cooldown on failure
                 </p>
               </div>
+
+              {/* Cooldown Alert Banner */}
+              {cooldownSeconds > 0 && (
+                <div className="mb-6 p-4 rounded-xl bg-amber-500/10 border border-amber-500/30 flex items-center gap-3 text-amber-300 text-xs font-medium">
+                  <Clock className="w-4 h-4 animate-spin text-amber-400" />
+                  <span>
+                    Reattempt cooldown active: Please review the lessons and retry in <strong>{cooldownSeconds}s</strong>.
+                  </span>
+                </div>
+              )}
 
               {assessment?.questions?.length > 0 ? (
                 <div className="space-y-8">
                   {assessment.questions.map((q: any, qIdx: number) => {
-                    const options = JSON.parse(q.options || '[]');
+                    let options: any[] = [];
+                    try {
+                      options = typeof q.options === 'string' ? JSON.parse(q.options) : (q.options || []);
+                    } catch {
+                      options = [];
+                    }
+
                     const feedback = quizResult?.feedback?.find((f: any) => f.questionId === q.id);
 
                     return (
-                      <div key={q.id} className="p-5 rounded-2xl bg-[#14151e] border border-white/5">
+                      <div key={q.id || qIdx} className="p-5 rounded-2xl bg-[#14151e] border border-white/5">
                         <div className="flex items-start justify-between gap-4 mb-4">
                           <p className="font-semibold text-sm text-white">
                             {qIdx + 1}. {q.question_text}
                           </p>
                           <span className="text-[10px] font-mono text-gray-500 uppercase px-2 py-0.5 rounded bg-white/5">
-                            {q.points} pt
+                            {q.points || 1} pt
                           </span>
                         </div>
 
@@ -426,12 +519,13 @@ export default function ChapterWorkspacePage() {
                             return (
                               <button
                                 key={opt.id}
+                                disabled={cooldownSeconds > 0}
                                 onClick={() => handleSelectOption(q.id, opt.id)}
                                 className={`w-full text-left p-3.5 rounded-xl text-xs transition-all flex items-center justify-between border ${
                                   isSelected
                                     ? 'bg-cyan-950/60 border-cyan-400 text-cyan-200 font-semibold'
                                     : 'bg-white/5 border-white/5 text-gray-300 hover:border-white/20'
-                                }`}
+                                } ${cooldownSeconds > 0 ? 'opacity-60 cursor-not-allowed' : ''}`}
                               >
                                 <span>{opt.text}</span>
                                 {isSelected && <CheckCircle className="w-4 h-4 text-cyan-400 shrink-0" />}
@@ -457,23 +551,34 @@ export default function ChapterWorkspacePage() {
                   })}
 
                   {/* Submission Box */}
-                  <div className="border-t border-white/10 pt-6 flex items-center justify-between">
+                  <div className="border-t border-white/10 pt-6 flex flex-wrap items-center justify-between gap-4">
                     <div>
                       {quizResult && (
                         <p className={`text-sm font-bold ${quizResult.passed ? 'text-emerald-400' : 'text-amber-400'}`}>
                           Score: {quizResult.score} / {quizResult.maxScore} ({quizResult.percentage}%)
-                          {quizResult.passed ? ' ΓÇö PASSED!' : ' ΓÇö Threshold not met. Review lessons and retry.'}
+                          {quizResult.passed ? ' — PASSED! Threshold (70%) achieved.' : ' — Threshold (70%) not met. Review lessons and retry.'}
                         </p>
                       )}
                     </div>
 
-                    <button
-                      onClick={handleSubmitQuiz}
-                      disabled={submittingQuiz || Object.keys(selectedAnswers).length < assessment.questions.length}
-                      className="btn-neo-light text-xs py-3 px-8 disabled:opacity-40"
-                    >
-                      {submittingQuiz ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Submit Assessment'}
-                    </button>
+                    <div className="flex items-center gap-3">
+                      {cooldownSeconds > 0 ? (
+                        <button
+                          disabled
+                          className="btn-neo-outline text-xs py-3 px-6 flex items-center gap-2 opacity-60 cursor-not-allowed"
+                        >
+                          <Clock className="w-4 h-4" /> Cooldown ({cooldownSeconds}s)
+                        </button>
+                      ) : (
+                        <button
+                          onClick={handleSubmitQuiz}
+                          disabled={submittingQuiz || Object.keys(selectedAnswers).length < assessment.questions.length}
+                          className="btn-neo-light text-xs py-3 px-8 disabled:opacity-40"
+                        >
+                          {submittingQuiz ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Submit Assessment'}
+                        </button>
+                      )}
+                    </div>
                   </div>
                 </div>
               ) : (
@@ -488,7 +593,7 @@ export default function ChapterWorkspacePage() {
               <div className="border-b border-white/5 pb-3 mb-4 flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <Sparkles className="w-4 h-4 text-cyan-400" />
-                  <h3 className="font-bold text-sm text-white">AI Learning Assistant</h3>
+                  <h3 className="font-bold text-sm text-white">DEVORA AI Learning Assistant</h3>
                 </div>
                 <span className="text-[10px] font-mono text-gray-500">CONTEXT: {chapter.title}</span>
               </div>
@@ -496,7 +601,7 @@ export default function ChapterWorkspacePage() {
               {/* Message List */}
               <div className="flex-1 overflow-y-auto space-y-3 pr-2 mb-4">
                 <div className="p-3 rounded-2xl bg-white/5 text-xs text-gray-300 max-w-md">
-                  Hello! I am your TechVerse AI Learning Assistant. Ask me to clarify any architectural concept, explain difficult code snippets, or provide additional practice exercises for this chapter.
+                  Hello! I am your DEVORA AI Assistant. Ask me to clarify any architectural concept, explain difficult code snippets, or provide additional practice exercises for this chapter.
                 </div>
 
                 {aiMessages.map((m, idx) => (

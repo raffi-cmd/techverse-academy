@@ -18,7 +18,7 @@ export default function TermsPage() {
           <section>
             <h2 className="font-bold text-sm text-white mb-2">1. Nature of Educational Certificates</h2>
             <p className="bg-yellow-500/10 border border-yellow-500/20 p-3 rounded-lg text-yellow-300">
-              TechVerse Academy certificates are educational completion credentials verifying that the holder has completed curriculum tasks and passed automated technical assessments. They are not accredited college degrees, vocational licenses, or governmental certifications.
+              DEVORA certificates are educational completion credentials verifying that the holder has completed curriculum tasks and passed automated technical assessments. They are not accredited college degrees, vocational licenses, or governmental certifications.
             </p>
           </section>
 
@@ -32,7 +32,7 @@ export default function TermsPage() {
           <section>
             <h2 className="font-bold text-sm text-white mb-2">3. Acceptable Use</h2>
             <p>
-              Users may not probe, scan, or test the vulnerability of the system without prior written authorization from TechVerse security administrators.
+              Users may not probe, scan, or test the vulnerability of the system without prior written authorization from DEVORA security administrators.
             </p>
           </section>
 

@@ -22,14 +22,29 @@ export function Navbar() {
   return (
     <header className="sticky top-0 z-50 bg-[#f5f6f8]/90 backdrop-blur-md border-b border-gray-200">
       <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
-        {/* Brand Logo matching reference */}
+        {/* DEVORA Brand Logo */}
         <Link href="/" className="flex items-center gap-3 group">
-          <div className="w-9 h-9 rounded-full bg-black flex items-center justify-center text-white font-bold text-sm tracking-tighter">
-            <div className="w-4 h-4 rounded-full border-2 border-white/80 border-t-transparent animate-spin-slow" />
+          <div className="w-10 h-10 rounded-xl overflow-hidden bg-black flex items-center justify-center border border-gray-300 shadow-sm shrink-0">
+            <img
+              src="/techverse-academy/devora-logo.png"
+              alt="DEVORA Logo"
+              className="w-full h-full object-cover"
+              onError={(e) => {
+                const target = e.target as HTMLImageElement;
+                if (!target.src.endsWith('/devora-logo.png')) {
+                  target.src = '/devora-logo.png';
+                }
+              }}
+            />
           </div>
-          <span className="font-extrabold text-xl tracking-tight text-black">
-            TechVerse
-          </span>
+          <div className="flex flex-col">
+            <span className="font-black text-xl tracking-tight text-black leading-none">
+              DEVORA
+            </span>
+            <span className="text-[9px] font-mono tracking-widest text-gray-500 uppercase font-semibold">
+              Learn . Build . Prove
+            </span>
+          </div>
         </Link>
 
         {/* Navigation Links */}
@@ -41,12 +56,12 @@ export function Navbar() {
           <Link href="/verify" className="hover:text-black transition-colors">Verify Certificate</Link>
         </nav>
 
-        {/* Right Search Pill & User Controls matching reference */}
+        {/* Right Search Pill & User Controls */}
         <div className="flex items-center gap-4">
           <form onSubmit={handleSearch} className="relative hidden sm:block">
             <input
               type="text"
-              placeholder="Search technologies..."
+              placeholder="Search pathways..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="bg-white/80 border border-gray-300 rounded-full pl-4 pr-10 py-1.5 text-xs text-gray-900 focus:outline-none focus:border-black w-48 focus:w-60 transition-all placeholder:text-gray-400"
@@ -78,63 +93,50 @@ export function Navbar() {
                     <div className="px-3 py-2 border-b border-white/5 mb-1">
                       <p className="font-semibold truncate">{user.name}</p>
                       <p className="text-gray-400 text-[11px] truncate">{user.email}</p>
-                      <span className="inline-block mt-1 px-2 py-0.5 rounded text-[9px] uppercase tracking-wider bg-white/10 text-gray-300">
-                        {user.role}
-                      </span>
                     </div>
-
                     <Link
                       href="/dashboard"
                       onClick={() => setMenuOpen(false)}
-                      className="flex items-center gap-2.5 px-3 py-2 rounded-xl hover:bg-white/5 transition-colors text-gray-200"
+                      className="flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-white/5 text-gray-300 hover:text-white transition-colors"
                     >
-                      <LayoutDashboard className="w-3.5 h-3.5 text-indigo-400" />
-                      Learner Dashboard
+                      <LayoutDashboard className="w-3.5 h-3.5" /> Dashboard
                     </Link>
-
                     <Link
                       href="/dashboard/certificates"
                       onClick={() => setMenuOpen(false)}
-                      className="flex items-center gap-2.5 px-3 py-2 rounded-xl hover:bg-white/5 transition-colors text-gray-200"
+                      className="flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-white/5 text-gray-300 hover:text-white transition-colors"
                     >
-                      <Award className="w-3.5 h-3.5 text-yellow-400" />
-                      My Certificates
+                      <Award className="w-3.5 h-3.5" /> My Certificates
                     </Link>
-
                     {isAdmin && (
                       <Link
                         href="/admin"
                         onClick={() => setMenuOpen(false)}
-                        className="flex items-center gap-2.5 px-3 py-2 rounded-xl hover:bg-white/5 transition-colors text-gray-200"
+                        className="flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-white/5 text-yellow-400 hover:text-yellow-300 transition-colors"
                       >
-                        <Shield className="w-3.5 h-3.5 text-emerald-400" />
-                        Admin Console
+                        <Shield className="w-3.5 h-3.5" /> Admin Console
                       </Link>
                     )}
-
                     <button
                       onClick={() => {
                         setMenuOpen(false);
                         logout();
                       }}
-                      className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl hover:bg-red-500/10 text-red-400 transition-colors text-left mt-1 border-t border-white/5 pt-2"
+                      className="w-full flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-red-500/10 text-red-400 hover:text-red-300 transition-colors mt-1"
                     >
-                      <LogOut className="w-3.5 h-3.5" />
-                      Sign Out
+                      <LogOut className="w-3.5 h-3.5" /> Sign Out
                     </button>
                   </div>
                 </>
               )}
             </div>
           ) : (
-            <div className="flex items-center gap-2">
-              <Link href="/auth/signin" className="text-xs font-semibold px-4 py-2 rounded-full hover:text-black text-gray-700">
-                Sign In
-              </Link>
-              <Link href="/auth/signup" className="btn-neo-dark text-xs py-2 px-5">
-                Get Started
-              </Link>
-            </div>
+            <Link
+              href="/auth/signin"
+              className="btn-neo-dark text-xs py-2 px-5"
+            >
+              Sign In
+            </Link>
           )}
         </div>
       </div>

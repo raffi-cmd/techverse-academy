@@ -33,15 +33,28 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       const res = await fetch('/api/auth/me');
       if (res.ok) {
         const data = await res.json();
-        setUser(data.user);
-      } else {
-        setUser(null);
+        if (data.user) {
+          setUser(data.user);
+          return;
+        }
       }
     } catch {
-      setUser(null);
-    } finally {
-      setLoading(false);
+      // Fallback to client localStorage on static hosting
     }
+
+    if (typeof window !== 'undefined') {
+      try {
+        const stored = localStorage.getItem('devora_user');
+        if (stored) {
+          setUser(JSON.parse(stored));
+        } else {
+          setUser(null);
+        }
+      } catch {
+        setUser(null);
+      }
+    }
+    setLoading(false);
   };
 
   useEffect(() => {
@@ -51,11 +64,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const logout = async () => {
     try {
       await fetch('/api/auth/logout', { method: 'POST' });
-      setUser(null);
-      window.location.href = '/';
-    } catch (err) {
-      console.error('Logout error:', err);
+    } catch {
+      // Ignore network failure on static export
     }
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem('devora_user');
+    }
+    setUser(null);
+    window.location.href = '/techverse-academy/';
   };
 
   return (
