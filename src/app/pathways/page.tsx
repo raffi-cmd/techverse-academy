@@ -23,21 +23,20 @@ export default function PathwaysCatalogPage() {
         {/* Header */}
         <div className="max-w-3xl mb-12">
           <span className="text-xs font-mono text-cyan-400 uppercase tracking-widest block mb-3">
-            TECHNICAL ACADEMY // CATALOG
+            AKADEMI TEKNOLOGI // KATALOG JALUR BELAJAR
           </span>
           <h1 className="font-display-title text-4xl sm:text-6xl text-white mb-6">
-            ALL 60 LEARNING<br />PATHWAYS
+            SELURUH 60 JALUR<br />PEMBELAJARAN IT
           </h1>
           <p className="text-sm text-gray-400 leading-relaxed">
-            Every published pathway contains at least 50 structured chapters, code exercises, and verifiable completion certification.
-            Pathways currently in development are clearly labeled.
+            Setiap jalur kurikulum terstruktur memuat materi bertahap dari fondasi hingga arsitektur produksi, evaluasi pemahaman bab, dan sertifikat kelulusan yang dapat diverifikasi secara publik. Jalur yang sedang dalam kurasi materi ditandai secara transparan.
           </p>
         </div>
 
         {/* Categories Bar */}
         <div className="flex items-center gap-3 overflow-x-auto pb-4 mb-10 text-xs font-semibold">
           <span className="px-4 py-2 rounded-full bg-white text-black shrink-0">
-            All Disciplines ({pathways.length})
+            Semua Bidang ({pathways.length})
           </span>
           {categories.map((c) => (
             <span
@@ -99,7 +98,7 @@ export default function PathwaysCatalogPage() {
                     href={`/pathways/${p.slug}`}
                     className="w-full inline-flex items-center justify-center gap-2 text-xs font-semibold py-2.5 px-4 rounded-xl bg-white/5 hover:bg-white/10 text-white border border-white/10 transition-colors"
                   >
-                    View Curriculum
+                    Buka Kurikulum Lengkap
                     <ArrowRight className="w-3.5 h-3.5" />
                   </Link>
                 </div>

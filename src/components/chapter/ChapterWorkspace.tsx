@@ -33,6 +33,20 @@ import {
 } from '@/lib/certificate-pdf';
 import { getStoredLanguage, Language } from '@/lib/i18n';
 
+function getCertificateTitleBilingual(type: CertificateType, lang: 'id' | 'en'): string {
+  if (lang === 'id') {
+    switch (type) {
+      case 'CHECKPOINT_EVALUATION':
+        return 'SERTIFIKAT TITIK PENCAPAIAN';
+      case 'TRACK_MASTERY':
+        return 'SERTIFIKAT KELULUSAN JALUR';
+      default:
+        return 'SERTIFIKAT KELULUSAN BAB';
+    }
+  }
+  return getCertificateTitle(type);
+}
+
 interface InitialData {
   chapter: any;
   lessons: any[];
@@ -532,7 +546,7 @@ export default function ChapterWorkspacePage({ initialData }: { initialData?: In
           }`}>
             <div className="flex items-center gap-2 text-yellow-400 text-xs font-bold uppercase mb-2">
               <Award className="w-4 h-4" />
-              {getCertificateTitle(certificateType)}
+              {getCertificateTitleBilingual(certificateType, lang)}
             </div>
             <p className="text-[11px] text-gray-400 leading-relaxed mb-4">
               {lang === 'id'
@@ -553,7 +567,7 @@ export default function ChapterWorkspacePage({ initialData }: { initialData?: In
                     onClick={() => downloadCertificateInBrowser(claimedCert)}
                     className="w-full btn-neo-light text-[11px] py-1.5 justify-center flex items-center gap-1.5"
                   >
-                    <Download className="w-3 h-3" /> {lang === 'id' ? 'Unduh PDF Landscape' : 'Download Landscape PDF'}
+                    <Download className="w-3 h-3" /> {lang === 'id' ? 'Unduh Dokumen PDF (Mendatar)' : 'Download Landscape PDF'}
                   </button>
                   <div className="grid grid-cols-2 gap-1.5">
                     <button
@@ -732,7 +746,7 @@ export default function ChapterWorkspacePage({ initialData }: { initialData?: In
                               {isHintRevealed ? (lang === 'id' ? 'Tutup Petunjuk' : 'Hide Hint') : (lang === 'id' ? 'Petunjuk' : 'Hint')}
                             </button>
                             <span className="text-[10px] font-mono text-gray-500 uppercase px-2 py-0.5 rounded bg-white/5">
-                              {q.points || 1} pt
+                              {q.points || 1} {lang === 'id' ? 'poin' : 'pt'}
                             </span>
                           </div>
                         </div>
@@ -826,7 +840,7 @@ export default function ChapterWorkspacePage({ initialData }: { initialData?: In
                           disabled
                           className="btn-neo-outline text-xs py-3 px-6 flex items-center gap-2 opacity-60 cursor-not-allowed"
                         >
-                          <Clock className="w-4 h-4" /> {lang === 'id' ? `Jeda (${cooldownSeconds}s)` : `Cooldown (${cooldownSeconds}s)`}
+                          <Clock className="w-4 h-4" /> {lang === 'id' ? `Jeda Waktu (${cooldownSeconds} dtk)` : `Cooldown (${cooldownSeconds}s)`}
                         </button>
                       ) : (
                         <button
