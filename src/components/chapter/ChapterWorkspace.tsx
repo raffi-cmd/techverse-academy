@@ -70,6 +70,41 @@ export default function ChapterWorkspacePage({ initialData }: { initialData?: In
   const [quizResult, setQuizResult] = useState<any>(null);
   const [cooldownSeconds, setCooldownSeconds] = useState(0);
   const [revealedHints, setRevealedHints] = useState<Record<string, boolean>>({});
+  const [shuffledOptionsMap, setShuffledOptionsMap] = useState<Record<string, any[]>>({});
+  const [showResultPanel, setShowResultPanel] = useState(false);
+  const [reviewMode, setReviewMode] = useState(false);
+
+  // Fisher-Yates shuffle (unbiased)
+  function fisherYatesShuffle<T>(arr: T[]): T[] {
+    const a = [...arr];
+    for (let i = a.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+  }
+
+  // Buat urutan opsi acak saat assessment dimuat atau percobaan baru dimulai
+  function buildShuffledOptions(questions: any[]): Record<string, any[]> {
+    const map: Record<string, any[]> = {};
+    for (const q of questions) {
+      let options: any[] = [];
+      try {
+        options = typeof q.options === 'string' ? JSON.parse(q.options) : q.options || [];
+      } catch {
+        options = [];
+      }
+      if (options.length > 0) {
+        const shuffled = fisherYatesShuffle(options);
+        // Beri label posisi A/B/C/D berdasarkan urutan tampilan
+        map[q.id] = shuffled.map((opt: any, idx: number) => ({
+          ...opt,
+          displayLabel: String.fromCharCode(65 + idx) // A, B, C, D
+        }));
+      }
+    }
+    return map;
+  }
 
   // Certificate claim state
   const [certificateName, setCertificateName] = useState('');
@@ -111,6 +146,11 @@ export default function ChapterWorkspacePage({ initialData }: { initialData?: In
       setLessons(initialData.lessons || []);
       setAssessment(initialData.assessment || null);
       setLoading(false);
+
+      // Inisialisasi pengacakan opsi saat assessment dimuat
+      if (initialData.assessment?.questions?.length > 0) {
+        setShuffledOptionsMap(buildShuffledOptions(initialData.assessment.questions));
+      }
     }
 
     if (typeof window !== 'undefined') {
@@ -144,6 +184,7 @@ export default function ChapterWorkspacePage({ initialData }: { initialData?: In
         if (lastAttempt) {
           if (lastAttempt.passed) {
             setQuizResult(lastAttempt);
+            setShowResultPanel(true);
           } else {
             const elapsed = Math.floor((Date.now() - lastAttempt.timestamp) / 1000);
             if (elapsed < 60) {
@@ -180,7 +221,12 @@ export default function ChapterWorkspacePage({ initialData }: { initialData?: In
   };
 
   const handleSubmitQuiz = () => {
-    if (!assessment || cooldownSeconds > 0) return;
+    if (!assessment || cooldownSeconds > 0 || submittingQuiz) return;
+    // Cegah submit ganda: jika sudah ada hasil lulus, jangan proses ulang
+    if (quizResult?.passed) {
+      setShowResultPanel(true);
+      return;
+    }
     setSubmittingQuiz(true);
 
     try {
@@ -193,24 +239,37 @@ export default function ChapterWorkspacePage({ initialData }: { initialData?: In
         const qPoints = q.points || 1;
         totalPoints += qPoints;
 
-        let options: any[] = [];
+        // Gunakan shuffledOptionsMap untuk konsistensi grading
+        const displayOptions = shuffledOptionsMap[q.id] || [];
+        let originalOptions: any[] = [];
         try {
-          options = typeof q.options === 'string' ? JSON.parse(q.options) : q.options || [];
+          originalOptions = typeof q.options === 'string' ? JSON.parse(q.options) : q.options || [];
         } catch {
-          options = [];
+          originalOptions = [];
         }
 
         const userSelected = selectedAnswers[q.id];
-        const correctOpt = options.find((o: any) => o.isCorrect === true || o.id === q.correct_answer);
+        // Cari jawaban benar berdasarkan isCorrect (field stabil, bukan posisi)
+        const allOptions = displayOptions.length > 0 ? displayOptions : originalOptions;
+        const correctOpt = allOptions.find((o: any) => o.isCorrect === true);
         const isCorrect = correctOpt ? correctOpt.id === userSelected : false;
 
         if (isCorrect) {
           earnedPoints += qPoints;
         }
 
+        // Temukan teks opsi yang dipilih pengguna dan opsi yang benar
+        const userSelectedOpt = allOptions.find((o: any) => o.id === userSelected);
+        const userSelectedText = userSelectedOpt
+          ? (lang === 'id' ? (userSelectedOpt.text_id || userSelectedOpt.text) : (userSelectedOpt.text_en || userSelectedOpt.text))
+          : '';
+        const correctText = correctOpt
+          ? (lang === 'id' ? (correctOpt.text_id || correctOpt.text) : (correctOpt.text_en || correctOpt.text))
+          : '';
+
         const defaultExp = lang === 'id'
-          ? (isCorrect ? 'Jawaban tepat sesuai standar kurikulum pertahanan siber DEVORA.' : 'Pilihan belum tepat. Pelajari kembali konsep kunci pada materi pembelajaran.')
-          : (isCorrect ? 'Accurate answer according to DEVORA cybersecurity curriculum standards.' : 'Incorrect option selected. Review key concepts in the lesson.');
+          ? (isCorrect ? 'Jawaban tepat sesuai standar kurikulum DEVORA.' : 'Pilihan belum tepat. Pelajari kembali konsep kunci pada materi pembelajaran.')
+          : (isCorrect ? 'Accurate answer according to DEVORA curriculum standards.' : 'Incorrect option selected. Review key concepts in the lesson.');
 
         const chosenExp = lang === 'id' ? (q.explanation_id || q.explanation || defaultExp) : (q.explanation_en || q.explanation || defaultExp);
 
@@ -218,7 +277,9 @@ export default function ChapterWorkspacePage({ initialData }: { initialData?: In
           questionId: q.id,
           isCorrect,
           selected: userSelected,
+          selectedText: userSelectedText,
           correctOptionId: correctOpt?.id,
+          correctText,
           explanation: chosenExp
         });
       }
@@ -239,6 +300,7 @@ export default function ChapterWorkspacePage({ initialData }: { initialData?: In
       };
 
       setQuizResult(result);
+      setShowResultPanel(true);
 
       if (typeof window !== 'undefined' && chapter?.id) {
         const attempts = JSON.parse(localStorage.getItem('devora_quiz_attempts') || '{}');
@@ -263,6 +325,34 @@ export default function ChapterWorkspacePage({ initialData }: { initialData?: In
     } finally {
       setSubmittingQuiz(false);
     }
+  };
+
+  // Percobaan ulang: reset semua state kuis untuk percobaan baru
+  const handleRetryQuiz = () => {
+    if (cooldownSeconds > 0) return;
+    setSelectedAnswers({});
+    setQuizResult(null);
+    setShowResultPanel(false);
+    setReviewMode(false);
+    setRevealedHints({});
+    // Acak ulang urutan opsi untuk percobaan baru
+    if (assessment?.questions?.length > 0) {
+      setShuffledOptionsMap(buildShuffledOptions(assessment.questions));
+    }
+  };
+
+  // Hitung URL bab berikutnya berdasarkan data chapter
+  const getNextChapterUrl = (): string | null => {
+    if (!chapter) return null;
+    const nextOrder = (chapter.sort_order || 1) + 1;
+    if (nextOrder > 50) return null; // Bab terakhir
+    // Buat slug bab berikutnya dari pola yang ada
+    const currentSlug = chapter.slug || '';
+    const pathwaySlug = chapter.pathway_slug || params.slug;
+    // Ganti nomor bab di slug
+    const nextSlug = currentSlug.replace(/ch-\d+/, `ch-${nextOrder}`);
+    if (nextSlug === currentSlug) return null;
+    return `/pathways/${pathwaySlug}/${nextSlug}`;
   };
 
   const handleClaimCertificate = () => {
@@ -713,18 +803,133 @@ export default function ChapterWorkspacePage({ initialData }: { initialData?: In
                 </div>
               )}
 
+              {/* ============ PANEL HASIL EVALUASI ============ */}
+              {showResultPanel && quizResult && (
+                <div className={`mb-8 p-6 rounded-2xl border-2 ${
+                  quizResult.passed 
+                    ? 'bg-emerald-950/30 border-emerald-500/40' 
+                    : 'bg-red-950/30 border-red-500/40'
+                }`}>
+                  {/* Status LULUS / BELUM LULUS */}
+                  <div className="flex items-center gap-3 mb-4">
+                    {quizResult.passed ? (
+                      <div className="w-12 h-12 rounded-full bg-emerald-500/20 flex items-center justify-center">
+                        <CheckCircle className="w-7 h-7 text-emerald-400" />
+                      </div>
+                    ) : (
+                      <div className="w-12 h-12 rounded-full bg-red-500/20 flex items-center justify-center">
+                        <XCircle className="w-7 h-7 text-red-400" />
+                      </div>
+                    )}
+                    <div>
+                      <h3 className={`text-xl font-bold ${quizResult.passed ? 'text-emerald-400' : 'text-red-400'}`}>
+                        {quizResult.passed
+                          ? (lang === 'id' ? 'LULUS!' : 'PASSED!')
+                          : (lang === 'id' ? 'BELUM LULUS' : 'NOT PASSED')}
+                      </h3>
+                      <p className="text-xs text-gray-400">
+                        {lang === 'id'
+                          ? `Ambang batas kelulusan: ${quizResult.passingThreshold}%`
+                          : `Passing threshold: ${quizResult.passingThreshold}%`}
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Skor */}
+                  <div className="grid grid-cols-3 gap-4 mb-6">
+                    <div className="bg-black/30 rounded-xl p-3 text-center">
+                      <p className="text-2xl font-bold text-white">{quizResult.score} / {quizResult.maxScore}</p>
+                      <p className="text-[10px] text-gray-400 uppercase">{lang === 'id' ? 'Skor' : 'Score'}</p>
+                    </div>
+                    <div className="bg-black/30 rounded-xl p-3 text-center">
+                      <p className={`text-2xl font-bold ${quizResult.passed ? 'text-emerald-400' : 'text-red-400'}`}>{quizResult.percentage}%</p>
+                      <p className="text-[10px] text-gray-400 uppercase">{lang === 'id' ? 'Persentase' : 'Percentage'}</p>
+                    </div>
+                    <div className="bg-black/30 rounded-xl p-3 text-center">
+                      <p className="text-2xl font-bold text-white">{quizResult.feedback?.filter((f: any) => f.isCorrect).length || 0}</p>
+                      <p className="text-[10px] text-gray-400 uppercase">{lang === 'id' ? 'Jawaban Benar' : 'Correct'}</p>
+                    </div>
+                  </div>
+
+                  {/* Tombol Aksi */}
+                  <div className="flex flex-wrap gap-3">
+                    {/* Ulas Jawaban */}
+                    <button
+                      onClick={() => { setReviewMode(!reviewMode); setShowResultPanel(false); }}
+                      className="btn-neo-outline text-xs py-2.5 px-5 flex items-center gap-2 text-gray-300 hover:text-white"
+                    >
+                      <BookOpen className="w-4 h-4" />
+                      {lang === 'id' ? 'Ulas Jawaban' : 'Review Answers'}
+                    </button>
+
+                    {/* Lanjut ke Bab Berikutnya (jika lulus) */}
+                    {quizResult.passed && getNextChapterUrl() && (
+                      <Link
+                        href={getNextChapterUrl()!}
+                        className="btn-neo-light text-xs py-2.5 px-5 flex items-center gap-2 bg-emerald-500 text-black font-bold hover:bg-emerald-400"
+                      >
+                        <ArrowRight className="w-4 h-4" />
+                        {lang === 'id' ? 'Lanjut ke Bab Berikutnya' : 'Continue to Next Chapter'}
+                      </Link>
+                    )}
+
+                    {/* Jika ini bab terakhir dan lulus */}
+                    {quizResult.passed && !getNextChapterUrl() && (
+                      <Link
+                        href={`/pathways/${params.slug}`}
+                        className="btn-neo-light text-xs py-2.5 px-5 flex items-center gap-2 bg-purple-500 text-white font-bold hover:bg-purple-400"
+                      >
+                        <Award className="w-4 h-4" />
+                        {lang === 'id' ? 'Kembali ke Kurikulum' : 'Return to Curriculum'}
+                      </Link>
+                    )}
+
+                    {/* Coba Lagi (jika tidak lulus) */}
+                    {!quizResult.passed && (
+                      cooldownSeconds > 0 ? (
+                        <button
+                          disabled
+                          className="btn-neo-outline text-xs py-2.5 px-5 flex items-center gap-2 opacity-60 cursor-not-allowed"
+                        >
+                          <Clock className="w-4 h-4" />
+                          {lang === 'id' ? `Coba Lagi (${cooldownSeconds} dtk)` : `Retry (${cooldownSeconds}s)`}
+                        </button>
+                      ) : (
+                        <button
+                          onClick={handleRetryQuiz}
+                          className="btn-neo-light text-xs py-2.5 px-5 flex items-center gap-2"
+                        >
+                          <RotateCcw className="w-4 h-4" />
+                          {lang === 'id' ? 'Coba Lagi' : 'Retry Quiz'}
+                        </button>
+                      )
+                    )}
+
+                    {/* Kembali ke Materi */}
+                    <button
+                      onClick={() => setActiveTab('lesson')}
+                      className="btn-neo-outline text-xs py-2.5 px-5 flex items-center gap-2 text-gray-300 hover:text-white"
+                    >
+                      <ArrowLeft className="w-4 h-4" />
+                      {lang === 'id' ? 'Kembali ke Materi' : 'Back to Lessons'}
+                    </button>
+                  </div>
+                </div>
+              )}
+
               {assessment?.questions?.length > 0 ? (
                 <div className="space-y-8">
                   {assessment.questions.map((q: any, qIdx: number) => {
-                    let options: any[] = [];
-                    try {
-                      options = typeof q.options === 'string' ? JSON.parse(q.options) : q.options || [];
-                    } catch {
-                      options = [];
-                    }
+                    // Gunakan shuffledOptionsMap alih-alih opsi asli
+                    const options = shuffledOptionsMap[q.id] || (() => {
+                      try {
+                        return typeof q.options === 'string' ? JSON.parse(q.options) : q.options || [];
+                      } catch { return []; }
+                    })();
 
                     const feedback = quizResult?.feedback?.find((f: any) => f.questionId === q.id);
                     const isHintRevealed = revealedHints[q.id];
+                    const isQuizSubmitted = !!quizResult;
 
                     const qText = lang === 'id' ? (q.question_text_id || q.question_text) : (q.question_text_en || q.question_text);
                     const qHint = lang === 'id' ? (q.hint_id || q.hint) : (q.hint_en || q.hint);
@@ -766,25 +971,48 @@ export default function ChapterWorkspacePage({ initialData }: { initialData?: In
                           </div>
                         )}
 
-                        {/* Options */}
+                        {/* Options (shuffled) */}
                         <div className="space-y-2">
-                          {options.map((opt: any) => {
+                          {options.map((opt: any, optIdx: number) => {
                             const isSelected = selectedAnswers[q.id] === opt.id;
                             const optText = lang === 'id' ? (opt.text_id || opt.text) : (opt.text_en || opt.text);
+                            const displayLabel = opt.displayLabel || String.fromCharCode(65 + optIdx);
+
+                            // Styling setelah submit: hijau untuk benar, merah untuk salah
+                            let optionStyle = '';
+                            if (isQuizSubmitted && feedback) {
+                              if (opt.isCorrect === true) {
+                                optionStyle = 'bg-emerald-950/60 border-emerald-400 text-emerald-200 font-semibold';
+                              } else if (isSelected && !feedback.isCorrect) {
+                                optionStyle = 'bg-red-950/60 border-red-400 text-red-200';
+                              } else {
+                                optionStyle = 'bg-white/5 border-white/5 text-gray-500';
+                              }
+                            } else if (isSelected) {
+                              optionStyle = 'bg-cyan-950/60 border-cyan-400 text-cyan-200 font-semibold';
+                            } else {
+                              optionStyle = 'bg-white/5 border-white/5 text-gray-300 hover:border-white/20';
+                            }
 
                             return (
                               <button
                                 key={opt.id}
-                                disabled={cooldownSeconds > 0}
+                                disabled={cooldownSeconds > 0 || isQuizSubmitted}
                                 onClick={() => handleSelectOption(q.id, opt.id)}
-                                className={`w-full text-left p-3.5 rounded-xl text-xs transition-all flex items-center justify-between border ${
-                                  isSelected
-                                    ? 'bg-cyan-950/60 border-cyan-400 text-cyan-200 font-semibold'
-                                    : 'bg-white/5 border-white/5 text-gray-300 hover:border-white/20'
-                                } ${cooldownSeconds > 0 ? 'opacity-60 cursor-not-allowed' : ''}`}
+                                className={`w-full text-left p-3.5 rounded-xl text-xs transition-all flex items-center justify-between border ${optionStyle} ${(cooldownSeconds > 0 || isQuizSubmitted) ? 'cursor-not-allowed' : ''}`}
                               >
-                                <span>{optText}</span>
-                                {isSelected && <CheckCircle className="w-4 h-4 text-cyan-400 shrink-0" />}
+                                <span><span className="font-mono font-bold mr-2 opacity-60">{displayLabel}.</span>{optText}</span>
+                                <span className="shrink-0 ml-2">
+                                  {isQuizSubmitted && feedback && opt.isCorrect === true && (
+                                    <CheckCircle className="w-4 h-4 text-emerald-400" />
+                                  )}
+                                  {isQuizSubmitted && feedback && isSelected && !feedback.isCorrect && (
+                                    <XCircle className="w-4 h-4 text-red-400" />
+                                  )}
+                                  {!isQuizSubmitted && isSelected && (
+                                    <CheckCircle className="w-4 h-4 text-cyan-400" />
+                                  )}
+                                </span>
                               </button>
                             );
                           })}
@@ -818,42 +1046,76 @@ export default function ChapterWorkspacePage({ initialData }: { initialData?: In
                     );
                   })}
 
-                  {/* Submission Box */}
+                  {/* Submission / Action Box */}
                   <div className="border-t border-white/10 pt-6 flex flex-wrap items-center justify-between gap-4">
                     <div>
-                      {quizResult && (
-                        <p
-                          className={`text-sm font-bold ${
+                      {quizResult && !showResultPanel && (
+                        <button
+                          onClick={() => setShowResultPanel(true)}
+                          className={`text-sm font-bold flex items-center gap-2 ${
                             quizResult.passed ? 'text-emerald-400' : 'text-amber-400'
                           }`}
                         >
                           {lang === 'id'
-                            ? `Skor: ${quizResult.score} / ${quizResult.maxScore} (${quizResult.percentage}%) ${quizResult.passed ? '— LULUS! Ambang batas 70% tercapai.' : '— Belum mencapai nilai 70%. Ulas kembali materi lalu coba lagi.'}`
-                            : `Score: ${quizResult.score} / ${quizResult.maxScore} (${quizResult.percentage}%) ${quizResult.passed ? '— PASSED! 70% threshold achieved.' : '— 70% threshold not met. Review lessons and retry.'}`}
-                        </p>
+                            ? `Skor: ${quizResult.score} / ${quizResult.maxScore} (${quizResult.percentage}%) ${quizResult.passed ? '— LULUS!' : '— Belum Lulus'}`
+                            : `Score: ${quizResult.score} / ${quizResult.maxScore} (${quizResult.percentage}%) ${quizResult.passed ? '— PASSED!' : '— Not Passed'}`}
+                          <span className="text-xs underline ml-2">{lang === 'id' ? 'Lihat Hasil' : 'View Results'}</span>
+                        </button>
                       )}
                     </div>
 
                     <div className="flex items-center gap-3">
-                      {cooldownSeconds > 0 ? (
-                        <button
-                          disabled
-                          className="btn-neo-outline text-xs py-3 px-6 flex items-center gap-2 opacity-60 cursor-not-allowed"
+                      {/* Tombol Coba Lagi (jika sudah submit dan gagal) */}
+                      {quizResult && !quizResult.passed && (
+                        cooldownSeconds > 0 ? (
+                          <button
+                            disabled
+                            className="btn-neo-outline text-xs py-3 px-6 flex items-center gap-2 opacity-60 cursor-not-allowed"
+                          >
+                            <Clock className="w-4 h-4" /> {lang === 'id' ? `Jeda Waktu (${cooldownSeconds} dtk)` : `Cooldown (${cooldownSeconds}s)`}
+                          </button>
+                        ) : (
+                          <button
+                            onClick={handleRetryQuiz}
+                            className="btn-neo-light text-xs py-3 px-6 flex items-center gap-2"
+                          >
+                            <RotateCcw className="w-4 h-4" /> {lang === 'id' ? 'Coba Lagi' : 'Retry Quiz'}
+                          </button>
+                        )
+                      )}
+
+                      {/* Tombol Lanjut ke Bab Berikutnya (jika lulus) */}
+                      {quizResult?.passed && getNextChapterUrl() && (
+                        <Link
+                          href={getNextChapterUrl()!}
+                          className="btn-neo-light text-xs py-3 px-6 flex items-center gap-2 bg-emerald-500 text-black font-bold hover:bg-emerald-400"
                         >
-                          <Clock className="w-4 h-4" /> {lang === 'id' ? `Jeda Waktu (${cooldownSeconds} dtk)` : `Cooldown (${cooldownSeconds}s)`}
-                        </button>
-                      ) : (
-                        <button
-                          onClick={handleSubmitQuiz}
-                          disabled={submittingQuiz || Object.keys(selectedAnswers).length < assessment.questions.length}
-                          className="btn-neo-light text-xs py-3 px-8 disabled:opacity-40"
-                        >
-                          {submittingQuiz ? (
-                            <Loader2 className="w-4 h-4 animate-spin" />
-                          ) : (
-                            lang === 'id' ? 'Kirim Jawaban Ujian' : 'Submit Exam'
-                          )}
-                        </button>
+                          {lang === 'id' ? 'Lanjut ke Bab Berikutnya' : 'Next Chapter'} <ArrowRight className="w-4 h-4" />
+                        </Link>
+                      )}
+
+                      {/* Tombol Submit (jika belum submit) */}
+                      {!quizResult && (
+                        cooldownSeconds > 0 ? (
+                          <button
+                            disabled
+                            className="btn-neo-outline text-xs py-3 px-6 flex items-center gap-2 opacity-60 cursor-not-allowed"
+                          >
+                            <Clock className="w-4 h-4" /> {lang === 'id' ? `Jeda Waktu (${cooldownSeconds} dtk)` : `Cooldown (${cooldownSeconds}s)`}
+                          </button>
+                        ) : (
+                          <button
+                            onClick={handleSubmitQuiz}
+                            disabled={submittingQuiz || Object.keys(selectedAnswers).length < (assessment?.questions?.length || 0)}
+                            className="btn-neo-light text-xs py-3 px-8 disabled:opacity-40"
+                          >
+                            {submittingQuiz ? (
+                              <Loader2 className="w-4 h-4 animate-spin" />
+                            ) : (
+                              lang === 'id' ? 'Kirim Jawaban Ujian' : 'Submit Exam'
+                            )}
+                          </button>
+                        )
                       )}
                     </div>
                   </div>
