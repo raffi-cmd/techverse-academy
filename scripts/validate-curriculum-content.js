@@ -62,6 +62,53 @@ assertCheck(
   !placeholderFound
 );
 
+// 1.1 Backend Development Chapter 01 Deep Content Validation
+const backendCh1Lessons = db.prepare(`
+  SELECT id, sort_order, title_en, title_id, 
+         length(content_en) as len_en, length(content_id) as len_id,
+         content_en, content_id
+  FROM lessons 
+  WHERE chapter_id = 'pathway_07_ch1'
+  ORDER BY sort_order
+`).all();
+
+assertCheck('Backend Development Chapter 1 has exactly 20 structured sections', backendCh1Lessons.length === 20, `Found: ${backendCh1Lessons.length}`);
+
+let allBackendSubstantive = true;
+let shortBackendSections = [];
+let backendPlaceholderFound = false;
+
+for (const lesson of backendCh1Lessons) {
+  if (!lesson.len_en || lesson.len_en < 1000 || !lesson.len_id || lesson.len_id < 1000) {
+    allBackendSubstantive = false;
+    shortBackendSections.push(`Sec ${lesson.sort_order} (${lesson.title_en}): EN=${lesson.len_en}, ID=${lesson.len_id}`);
+  }
+  if (
+    lesson.content_en?.includes('validateState<T>') || 
+    lesson.content_id?.includes('validateState<T>') ||
+    lesson.content_en?.includes('TODO:')
+  ) {
+    backendPlaceholderFound = true;
+  }
+}
+
+assertCheck(
+  'All 20 Backend Chapter 1 sections have substantive bilingual content (>1000 chars)',
+  allBackendSubstantive,
+  shortBackendSections.join('; ')
+);
+
+assertCheck(
+  'No generic boilerplate (validateState<T> or TODO) in Backend Chapter 1 content',
+  !backendPlaceholderFound
+);
+
+const backendCh1Questions = db.prepare(`
+  SELECT COUNT(*) as c FROM assessment_questions
+  WHERE assessment_id = 'asmt_pathway_07_ch1'
+`).get().c;
+assertCheck('Backend Development Chapter 1 has exactly 20 assessment questions', backendCh1Questions === 20, `Found: ${backendCh1Questions}`);
+
 // 2. Cybersecurity Pathway 37 Comprehensive Curriculum
 const chCount = db.prepare("SELECT COUNT(*) as c FROM chapters WHERE pathway_id = 'pathway_37'").get().c;
 assertCheck('Cybersecurity Fundamentals has all 50 chapters defined', chCount === 50, `Found: ${chCount}`);
