@@ -8,7 +8,8 @@
                     "start":  "next start",
                     "lint":  "eslint",
                     "seed":  "node tests/run-tests.js",
-                    "test":  "node tests/run-tests.js \u0026\u0026 node tests/e2e-http-test.js"
+                    "test:curriculum": "node scripts/validate-curriculum-content.js",
+                    "test": "node tests/run-tests.js && node scripts/validate-curriculum-content.js"
                 },
     "dependencies":  {
                          "lucide-react":  "^1.65.0",

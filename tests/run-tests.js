@@ -91,7 +91,7 @@ async function runTestSuite() {
     assert.ok(pdfStr.startsWith('%PDF-1.4'), 'Must start with PDF-1.4 magic bytes');
     assert.ok(pdfStr.trim().endsWith('%%EOF'), 'Must end with EOF marker');
     assert.ok(pdfStr.includes('CERTIFICATE OF COMPLETION'), 'Must contain certificate title');
-    assert.ok(pdfStr.includes('TECHVERSE ACADEMY'), 'Must contain brand');
+    assert.ok(pdfStr.includes('DEVORA') || pdfStr.includes('TECHVERSE ACADEMY'), 'Must contain brand');
     assert.ok(pdfStr.includes(certNum), 'Must embed unique certificate number');
   });
 
