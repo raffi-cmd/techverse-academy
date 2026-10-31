@@ -649,9 +649,27 @@ export default function ChapterWorkspacePage({ initialData }: { initialData?: In
                 <p className="font-bold flex items-center gap-1.5 mb-1 text-emerald-400">
                   <CheckCircle className="w-3.5 h-3.5" /> {lang === 'id' ? 'Sertifikat Terbit!' : 'Certificate Issued!'}
                 </p>
-                <p className="font-mono text-[10px] text-gray-400 mb-3 break-all">
+                <p className="font-mono text-[10px] text-gray-400 mb-2 break-all">
                   {claimedCert.certificateNumber}
                 </p>
+
+                {/* Visual Certificate Template Preview */}
+                <div className="relative rounded-lg overflow-hidden border border-yellow-500/30 mb-3 bg-[#050c1e] aspect-[1024/838]">
+                  <img
+                    src="/certificates/devora-certificate-template.jpg"
+                    alt="Devora Certificate Template"
+                    className="w-full h-full object-cover"
+                  />
+                  <div className="absolute inset-0 flex flex-col justify-center items-center text-center p-2 bg-black/10">
+                    <p className="font-serif font-bold text-[10px] sm:text-xs text-white uppercase tracking-wider drop-shadow-md">
+                      {claimedCert.recipientName}
+                    </p>
+                    <p className="text-[7px] sm:text-[8px] text-gray-300 mt-0.5 line-clamp-1 max-w-[80%] drop-shadow">
+                      {claimedCert.chapterTitle}
+                    </p>
+                  </div>
+                </div>
+
                 <div className="space-y-1.5">
                   <button
                     onClick={() => downloadCertificateInBrowser(claimedCert)}

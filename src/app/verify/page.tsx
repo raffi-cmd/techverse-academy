@@ -5,15 +5,21 @@ import { Navbar } from '@/components/layout/Navbar';
 import { Footer } from '@/components/layout/Footer';
 import { ShieldCheck, Search, Award, Download, CheckCircle, XCircle, Loader2 } from 'lucide-react';
 import { downloadCertificateInBrowser, downloadCertificateImage } from '@/lib/certificate-pdf';
+import { getStoredLanguage, Language } from '@/lib/i18n';
 
 export default function CertificateVerificationPage() {
+  const [lang, setLang] = useState<Language>('id');
   const [certId, setCertId] = useState('');
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<any>(null);
   const [errorMsg, setErrorMsg] = useState('');
 
-  // Auto-fill from query param ?cert=...
+  // Auto-fill from query param ?cert=... and sync language
   useEffect(() => {
+    setLang(getStoredLanguage());
+    const handleLangChange = () => setLang(getStoredLanguage());
+    window.addEventListener('devora_language_change', handleLangChange);
+
     if (typeof window !== 'undefined') {
       const urlParams = new URLSearchParams(window.location.search);
       const queryCert = urlParams.get('cert');
@@ -22,6 +28,8 @@ export default function CertificateVerificationPage() {
         verifyCertId(queryCert);
       }
     }
+
+    return () => window.removeEventListener('devora_language_change', handleLangChange);
   }, []);
 
   const verifyCertId = (idToVerify: string) => {
@@ -47,24 +55,40 @@ export default function CertificateVerificationPage() {
       } catch {}
     }
 
-    // 2. Check sample or dynamically valid DEVORA certificate formats
-    if (cleanId.toUpperCase().startsWith('DEVORA-') || cleanId.toUpperCase().startsWith('TV-')) {
+    // 2. Daftar sertifikat terdaftar / contoh resmi DEVORA
+    const officialRegisteredCertificates: Record<string, any> = {
+      'DEVORA-2026-ALPHA-01': {
+        certificateNumber: 'DEVORA-2026-ALPHA-01',
+        recipientName: 'Raffi Dwi Putra',
+        chapterTitle: 'Pengantar Keamanan Siber & Fondasi Pertahanan',
+        pathwayName: 'Cybersecurity Fundamentals',
+        issueDate: '2026-10-30',
+        verificationUrl: 'https://raffi-cmd.github.io/techverse-academy/verify/?cert=DEVORA-2026-ALPHA-01'
+      },
+      'DEVORA-2026-SAMPLE-01': {
+        certificateNumber: 'DEVORA-2026-SAMPLE-01',
+        recipientName: 'DEVORA Verified Graduate',
+        chapterTitle: 'Arsitektur Komputasi & Rekayasa Backend',
+        pathwayName: 'Backend Development',
+        issueDate: '2026-10-31',
+        verificationUrl: 'https://raffi-cmd.github.io/techverse-academy/verify/?cert=DEVORA-2026-SAMPLE-01'
+      }
+    };
+
+    if (officialRegisteredCertificates[cleanId.toUpperCase()]) {
       setResult({
         result: 'valid',
-        certificate: {
-          certificateNumber: cleanId.toUpperCase(),
-          recipientName: 'DEVORA Verified Graduate',
-          chapterTitle: 'Software Architecture & Scalable Systems',
-          pathwayName: 'Full-Stack Software Engineering',
-          issueDate: new Date().toISOString().split('T')[0],
-          verificationUrl: `https://raffi-cmd.github.io/techverse-academy/verify/?cert=${cleanId.toUpperCase()}`
-        }
+        certificate: officialRegisteredCertificates[cleanId.toUpperCase()]
       });
       setLoading(false);
       return;
     }
 
-    setErrorMsg('No certificate record found with identifier: ' + cleanId);
+    setErrorMsg(
+      lang === 'id'
+        ? `Tidak ditemukan catatan sertifikat dengan nomor identifikasi: ${cleanId}. Pastikan nomor sertifikat yang Anda masukkan sudah benar.`
+        : `No certificate record found with identifier: ${cleanId}. Please check the certificate number and try again.`
+    );
     setLoading(false);
   };
 
@@ -144,6 +168,26 @@ export default function CertificateVerificationPage() {
               <span className="text-xs font-mono text-yellow-400 font-bold bg-yellow-500/10 px-3 py-1 rounded-full border border-yellow-500/20">
                 STATUS: VALID
               </span>
+            </div>
+
+            {/* Visual Certificate Template Preview */}
+            <div className="relative rounded-xl overflow-hidden border border-yellow-500/30 mb-8 bg-[#050c1e] aspect-[1024/838] max-w-lg mx-auto shadow-xl">
+              <img
+                src="/certificates/devora-certificate-template.jpg"
+                alt="Devora Certificate Template"
+                className="w-full h-full object-cover"
+              />
+              <div className="absolute inset-0 flex flex-col justify-center items-center text-center p-4 bg-black/10">
+                <p className="font-serif font-bold text-sm sm:text-lg text-white uppercase tracking-wider drop-shadow-md">
+                  {result.certificate.recipientName}
+                </p>
+                <p className="text-[10px] sm:text-xs text-gray-300 mt-1 line-clamp-1 max-w-[85%] drop-shadow">
+                  {result.certificate.chapterTitle}
+                </p>
+                <p className="text-[8px] sm:text-[10px] font-mono text-yellow-400/90 mt-1">
+                  ID: {result.certificate.certificateNumber}
+                </p>
+              </div>
             </div>
 
             <div className="grid sm:grid-cols-2 gap-6 text-xs mb-8">
