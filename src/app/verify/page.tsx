@@ -6,6 +6,7 @@ import { Footer } from '@/components/layout/Footer';
 import { ShieldCheck, Search, Award, Download, CheckCircle, XCircle, Loader2 } from 'lucide-react';
 import { downloadCertificateInBrowser, downloadCertificateImage } from '@/lib/certificate-pdf';
 import { getStoredLanguage, Language } from '@/lib/i18n';
+import CertificatePreview from '@/components/certificate/CertificatePreview';
 
 export default function CertificateVerificationPage() {
   const [lang, setLang] = useState<Language>('id');
@@ -170,25 +171,16 @@ export default function CertificateVerificationPage() {
               </span>
             </div>
 
-            {/* Visual Certificate Template Preview */}
-            <div className="relative rounded-xl overflow-hidden border border-yellow-500/30 mb-8 bg-[#050c1e] aspect-[1024/838] max-w-lg mx-auto shadow-xl">
-              <img
-                src="/certificates/devora-certificate-template.jpg"
-                alt="Devora Certificate Template"
-                className="w-full h-full object-cover"
-              />
-              <div className="absolute inset-0 flex flex-col justify-center items-center text-center p-4 bg-black/10">
-                <p className="font-serif font-bold text-sm sm:text-lg text-white uppercase tracking-wider drop-shadow-md">
-                  {result.certificate.recipientName}
-                </p>
-                <p className="text-[10px] sm:text-xs text-gray-300 mt-1 line-clamp-1 max-w-[85%] drop-shadow">
-                  {result.certificate.chapterTitle}
-                </p>
-                <p className="text-[8px] sm:text-[10px] font-mono text-yellow-400/90 mt-1">
-                  ID: {result.certificate.certificateNumber}
-                </p>
-              </div>
-            </div>
+            {/* Visual Certificate Template Preview Terukur & Bebas Tumpang Tindih */}
+            <CertificatePreview
+              recipientName={result.certificate.recipientName}
+              chapterTitle={result.certificate.chapterTitle}
+              pathwayName={result.certificate.pathwayName}
+              issueDate={result.certificate.issueDate}
+              completionDate={result.certificate.completionDate}
+              certificateNumber={result.certificate.certificateNumber}
+              className="max-w-xl mx-auto mb-8"
+            />
 
             <div className="grid sm:grid-cols-2 gap-6 text-xs mb-8">
               <div>

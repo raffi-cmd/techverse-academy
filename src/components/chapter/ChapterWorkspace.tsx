@@ -24,6 +24,7 @@ import {
   Image as ImageIcon,
   Lightbulb
 } from 'lucide-react';
+import CertificatePreview from '@/components/certificate/CertificatePreview';
 import {
   CertificateData,
   CertificateType,
@@ -374,6 +375,9 @@ export default function ChapterWorkspacePage({ initialData }: { initialData?: In
 
       const chapterTitle = lang === 'id' ? (chapter.title_id || chapter.title) : (chapter.title_en || chapter.title);
       const pathwayName = chapter.pathway_name;
+      const completionDate = quizResult?.timestamp
+        ? new Date(quizResult.timestamp).toISOString().split('T')[0]
+        : issueDate;
 
       const certData: CertificateData = {
         certificateNumber: certNum,
@@ -381,6 +385,7 @@ export default function ChapterWorkspacePage({ initialData }: { initialData?: In
         chapterTitle,
         pathwayName,
         issueDate,
+        completionDate,
         verificationUrl,
         type: certificateType
       };
@@ -653,22 +658,15 @@ export default function ChapterWorkspacePage({ initialData }: { initialData?: In
                   {claimedCert.certificateNumber}
                 </p>
 
-                {/* Visual Certificate Template Preview */}
-                <div className="relative rounded-lg overflow-hidden border border-yellow-500/30 mb-3 bg-[#050c1e] aspect-[1024/838]">
-                  <img
-                    src="/certificates/devora-certificate-template.jpg"
-                    alt="Devora Certificate Template"
-                    className="w-full h-full object-cover"
-                  />
-                  <div className="absolute inset-0 flex flex-col justify-center items-center text-center p-2 bg-black/10">
-                    <p className="font-serif font-bold text-[10px] sm:text-xs text-white uppercase tracking-wider drop-shadow-md">
-                      {claimedCert.recipientName}
-                    </p>
-                    <p className="text-[7px] sm:text-[8px] text-gray-300 mt-0.5 line-clamp-1 max-w-[80%] drop-shadow">
-                      {claimedCert.chapterTitle}
-                    </p>
-                  </div>
-                </div>
+                {/* Visual Certificate Template Preview Terukur & Bebas Tumpang Tindih */}
+                <CertificatePreview
+                  recipientName={claimedCert.recipientName}
+                  chapterTitle={claimedCert.chapterTitle}
+                  pathwayName={claimedCert.pathwayName}
+                  issueDate={claimedCert.issueDate}
+                  certificateNumber={claimedCert.certificateNumber}
+                  className="mb-3"
+                />
 
                 <div className="space-y-1.5">
                   <button
