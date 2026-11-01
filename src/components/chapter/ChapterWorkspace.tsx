@@ -74,6 +74,7 @@ export default function ChapterWorkspacePage({ initialData }: { initialData?: In
   const [shuffledOptionsMap, setShuffledOptionsMap] = useState<Record<string, any[]>>({});
   const [showResultPanel, setShowResultPanel] = useState(false);
   const [reviewMode, setReviewMode] = useState(false);
+  const [validationNotice, setValidationNotice] = useState<string>('');
 
   // Fisher-Yates shuffle (unbiased)
   function fisherYatesShuffle<T>(arr: T[]): T[] {
@@ -228,6 +229,37 @@ export default function ChapterWorkspacePage({ initialData }: { initialData?: In
       setShowResultPanel(true);
       return;
     }
+
+    const questions = assessment.questions || [];
+    const answeredCount = Object.keys(selectedAnswers).length;
+    const totalCount = questions.length;
+
+    // Validasi interaktif: pastikan seluruh pertanyaan telah dijawab
+    if (totalCount > 0 && answeredCount < totalCount) {
+      let firstMissingIdx = -1;
+      for (let i = 0; i < questions.length; i++) {
+        if (!selectedAnswers[questions[i].id]) {
+          firstMissingIdx = i;
+          break;
+        }
+      }
+      const missingNum = firstMissingIdx !== -1 ? firstMissingIdx + 1 : 1;
+      const msg = lang === 'id'
+        ? `Harap jawab semua pertanyaan (${answeredCount}/${totalCount} terjawab). Pertanyaan nomor ${missingNum} belum dipilih.`
+        : `Please answer all questions (${answeredCount}/${totalCount} answered). Question #${missingNum} is pending.`;
+      
+      setValidationNotice(msg);
+
+      if (typeof document !== 'undefined' && firstMissingIdx !== -1) {
+        const el = document.getElementById(`quiz-question-${questions[firstMissingIdx]?.id}`);
+        if (el) {
+          el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+      }
+      return;
+    }
+
+    setValidationNotice('');
     setSubmittingQuiz(true);
 
     try {
@@ -951,7 +983,11 @@ export default function ChapterWorkspacePage({ initialData }: { initialData?: In
                     const qHint = lang === 'id' ? (q.hint_id || q.hint) : (q.hint_en || q.hint);
 
                     return (
-                      <div key={q.id || qIdx} className="p-5 rounded-2xl bg-[#14151e] border border-white/5">
+                      <div
+                        key={q.id || qIdx}
+                        id={`quiz-question-${q.id}`}
+                        className="p-5 rounded-2xl bg-[#14151e] border border-white/5 scroll-mt-24 transition-colors"
+                      >
                         <div className="flex items-start justify-between gap-4 mb-4">
                           <p className="font-semibold text-sm text-white">
                             {qIdx + 1}. {qText}
@@ -1110,7 +1146,7 @@ export default function ChapterWorkspacePage({ initialData }: { initialData?: In
                         </Link>
                       )}
 
-                      {/* Tombol Submit (jika belum submit) */}
+                      {/* Tombol Submit Interaktif dengan Indikator Progres */}
                       {!quizResult && (
                         cooldownSeconds > 0 ? (
                           <button
@@ -1120,17 +1156,38 @@ export default function ChapterWorkspacePage({ initialData }: { initialData?: In
                             <Clock className="w-4 h-4" /> {lang === 'id' ? `Jeda Waktu (${cooldownSeconds} dtk)` : `Cooldown (${cooldownSeconds}s)`}
                           </button>
                         ) : (
-                          <button
-                            onClick={handleSubmitQuiz}
-                            disabled={submittingQuiz || Object.keys(selectedAnswers).length < (assessment?.questions?.length || 0)}
-                            className="btn-neo-light text-xs py-3 px-8 disabled:opacity-40"
-                          >
-                            {submittingQuiz ? (
-                              <Loader2 className="w-4 h-4 animate-spin" />
-                            ) : (
-                              lang === 'id' ? 'Kirim Jawaban Ujian' : 'Submit Exam'
+                          <div className="flex flex-col items-end gap-2 w-full sm:w-auto">
+                            {validationNotice && (
+                              <div className="text-[11px] text-amber-300 bg-amber-500/15 border border-amber-500/30 px-3 py-1.5 rounded-xl flex items-center gap-2 animate-pulse max-w-md">
+                                <HelpCircle className="w-3.5 h-3.5 shrink-0 text-amber-400" />
+                                <span>{validationNotice}</span>
+                              </div>
                             )}
-                          </button>
+                            <button
+                              type="button"
+                              onClick={handleSubmitQuiz}
+                              disabled={submittingQuiz}
+                              className={`btn-neo-light text-xs py-3 px-8 flex items-center justify-center gap-2 transition-all w-full sm:w-auto ${
+                                Object.keys(selectedAnswers).length < (assessment?.questions?.length || 0)
+                                  ? 'bg-amber-400/90 hover:bg-amber-400 text-black font-semibold'
+                                  : 'bg-white hover:bg-gray-100 text-black font-bold shadow-lg shadow-white/10'
+                              }`}
+                            >
+                              {submittingQuiz ? (
+                                <Loader2 className="w-4 h-4 animate-spin" />
+                              ) : (
+                                <>
+                                  <Send className="w-3.5 h-3.5" />
+                                  <span>
+                                    {lang === 'id' ? 'Kirim Jawaban Ujian' : 'Submit Exam'}{' '}
+                                    <span className="font-mono text-[11px] opacity-80">
+                                      ({Object.keys(selectedAnswers).length}/{assessment?.questions?.length || 0})
+                                    </span>
+                                  </span>
+                                </>
+                              )}
+                            </button>
+                          </div>
                         )
                       )}
                     </div>

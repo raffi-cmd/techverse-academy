@@ -204,9 +204,16 @@ export default function CertificateVerificationPage() {
               </div>
 
               <div>
-                <p className="text-gray-500 uppercase tracking-wider text-[10px] mb-1">Issue Date</p>
+                <p className="text-gray-500 uppercase tracking-wider text-[10px] mb-1">Issue Date (Tanggal Terbit)</p>
                 <p className="font-mono text-gray-300">{result.certificate.issueDate}</p>
               </div>
+
+              {result.certificate.completionDate && (
+                <div>
+                  <p className="text-gray-500 uppercase tracking-wider text-[10px] mb-1">Completion Date (Tanggal Lulus)</p>
+                  <p className="font-mono text-emerald-400 font-bold">{result.certificate.completionDate}</p>
+                </div>
+              )}
 
               <div>
                 <p className="text-gray-500 uppercase tracking-wider text-[10px] mb-1">Issuing Authority</p>

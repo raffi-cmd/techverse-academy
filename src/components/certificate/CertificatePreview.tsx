@@ -1,6 +1,5 @@
-'use client';
-
 import React from 'react';
+import { CERTIFICATE_TEMPLATE_BASE64 } from '@/lib/certificate-template-base64';
 
 export interface CertificatePreviewProps {
   recipientName: string;
@@ -47,9 +46,9 @@ export default function CertificatePreview({
 
   return (
     <div className={`relative rounded-xl overflow-hidden border border-yellow-500/30 bg-[#050c1e] aspect-[1024/838] select-none shadow-2xl ${className}`}>
-      {/* Background Image Template Asli */}
+      {/* Background Image Template Asli (Base64 tersemat agar 100% bebas dari kendala subpath GitHub Pages) */}
       <img
-        src="/certificates/devora-certificate-template.jpg"
+        src={CERTIFICATE_TEMPLATE_BASE64}
         alt="Devora Certificate Official Template"
         className="w-full h-full object-cover pointer-events-none"
       />

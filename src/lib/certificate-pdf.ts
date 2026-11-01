@@ -40,7 +40,21 @@ export function getCertificateSubtext(type?: CertificateType): string {
  * Builds an authoritative PDF-1.4 binary string (landscape A4)
  * Embedding original typography, vector styling, brand accents, and verification elements.
  */
-export function buildCertificatePdfRaw(data: CertificateData): string {
+function getTemplateJpegBytes(): Uint8Array {
+  const base64Clean = CERTIFICATE_TEMPLATE_BASE64.replace(/^data:image\/[a-z]+;base64,/, '');
+  if (typeof Buffer !== 'undefined') {
+    return Buffer.from(base64Clean, 'base64');
+  }
+  const binaryString = atob(base64Clean);
+  const len = binaryString.length;
+  const bytes = new Uint8Array(len);
+  for (let i = 0; i < len; i++) {
+    bytes[i] = binaryString.charCodeAt(i);
+  }
+  return bytes;
+}
+
+export function buildCertificatePdfRaw(data: CertificateData): Uint8Array {
   const width = 841.89;
   const height = 595.28;
 
@@ -56,269 +70,130 @@ export function buildCertificatePdfRaw(data: CertificateData): string {
   const pathway = escapePdf(data.pathwayName || 'Learning Pathway');
   const certNum = escapePdf(data.certificateNumber || 'DEVORA-CERT');
   const dateStr = escapePdf(data.issueDate || new Date().toISOString().split('T')[0]);
-  const verifyUrl = escapePdf(data.verificationUrl || 'https://raffi-cmd.github.io/techverse-academy/verify/');
-  const mainTitle = escapePdf(getCertificateTitle(data.type));
-  const subDesc = escapePdf(getCertificateSubtext(data.type));
+  const completionDate = data.completionDate ? escapePdf(data.completionDate) : null;
 
-  const contentStream = `
-q
-% Background: Deep Navy
-0.031 0.043 0.078 rg
-0 0 ${width} ${height} re f
+  let nameFontSize = 26;
+  if (recipient.length > 35) nameFontSize = 16;
+  else if (recipient.length > 25) nameFontSize = 20;
+  else if (recipient.length > 18) nameFontSize = 23;
 
-% Left Wave Arch Accent Background (Navy to Electric Blue)
-0.05 0.09 0.22 rg
-0 0 240 ${height} re f
+  const estWidth = recipient.length * (nameFontSize * 0.52);
+  const nameX = Math.max(340, Math.round(538 - estWidth / 2));
 
-% Outer Dark Accent Border
-0.12 0.16 0.28 RG
-2 w
-20 20 ${width - 40} ${height - 40} re S
+  const courseText = '[ ' + pathway + ' - ' + chapter + ' ]';
+  const estCourseWidth = courseText.length * (10.5 * 0.48);
+  const courseX = Math.max(330, Math.round(538 - estCourseWidth / 2));
 
-% Gold Border: #D4AF37 (0.831, 0.686, 0.216)
-0.831 0.686 0.216 RG
-1.5 w
-35 35 ${width - 70} ${height - 70} re S
+  const dateX = 372;
 
-% Left Curved Decorative Gold Lines
-0.831 0.686 0.216 RG
-3 w
-230 0 m 250 180 220 400 240 ${height} c S
+  const idText = completionDate && completionDate !== dateStr
+    ? 'CERTIFICATE ID: ' + certNum + '   |   LULUS: ' + completionDate
+    : 'CERTIFICATE ID: ' + certNum;
+  const estIdWidth = idText.length * (8 * 0.48);
+  const idX = Math.max(330, Math.round(538 - estIdWidth / 2));
 
-% Left Column: Brand & Logo Block
-BT
-/F2 26 Tf
-0.831 0.686 0.216 rg
-55 ${height - 120} Td
-(DEVORA) Tj
-ET
+  const textStream =
+    '% Brand: DEVORA - CERTIFICATE OF ACHIEVEMENT\n' +
+    'q\n' +
+    width.toFixed(2) + ' 0 0 ' + height.toFixed(2) + ' 0 0 cm\n' +
+    '/Img1 Do\n' +
+    'Q\n' +
+    'BT\n' +
+    '/F1 ' + nameFontSize + ' Tf\n' +
+    '1 1 1 rg\n' +
+    nameX + ' 352 Td\n' +
+    '(' + recipient + ') Tj\n' +
+    'ET\n' +
+    'BT\n' +
+    '/F2 10.5 Tf\n' +
+    '0.22 0.74 0.97 rg\n' +
+    courseX + ' 248 Td\n' +
+    '(' + courseText + ') Tj\n' +
+    'ET\n' +
+    'BT\n' +
+    '/F2 11 Tf\n' +
+    '0.96 0.98 1 rg\n' +
+    dateX + ' 168 Td\n' +
+    '(' + dateStr + ') Tj\n' +
+    'ET\n' +
+    'BT\n' +
+    '/F2 8 Tf\n' +
+    '0.6 0.65 0.75 rg\n' +
+    idX + ' 22 Td\n' +
+    '(' + idText + ') Tj\n' +
+    'ET\n';
 
-BT
-/F1 9 Tf
-0.7 0.8 0.95 rg
-55 ${height - 138} Td
-(Learn. Build. Prove.) Tj
-ET
+  const textEncoder = new TextEncoder();
+  const textBuf = textEncoder.encode(textStream);
+  const imgBytes = getTemplateJpegBytes();
 
-% Left Column: Congratulations Gold Seal
-0.831 0.686 0.216 RG
-2 w
-110 ${height - 240} 45 0 360 arc S
-0.831 0.686 0.216 rg
-110 ${height - 240} 40 0 360 arc f
+  const header = textEncoder.encode('%PDF-1.4\n%\xe2\xe3\xcf\xd3\n');
+  const offsets: number[] = [];
+  let currentPos = header.length;
 
-BT
-/F2 9 Tf
-0.031 0.043 0.078 rg
-75 ${height - 243} Td
-(CONGRATULATIONS) Tj
-ET
+  const chunks: Uint8Array[] = [header];
 
-% Right Main Area: Heading "CERTIFICATE OF ACHIEVEMENT"
-BT
-/F2 36 Tf
-0.831 0.686 0.216 rg
-360 ${height - 120} Td
-(CERTIFICATE) Tj
-ET
-
-BT
-/F2 16 Tf
-1 1 1 rg
-365 ${height - 150} Td
-(OF ACHIEVEMENT) Tj
-ET
-
-% Subheading: PROUDLY PRESENTED TO
-BT
-/F1 12 Tf
-0.75 0.8 0.9 rg
-410 ${height - 200} Td
-(PROUDLY PRESENTED TO) Tj
-ET
-
-% Recipient Name (Large, White/Gold)
-BT
-/F2 28 Tf
-1 1 1 rg
-${Math.max(300, 560 - (recipient.length * 8))} ${height - 250} Td
-(${recipient}) Tj
-ET
-
-% Underline below recipient name
-0.831 0.686 0.216 RG
-1 w
-350 ${height - 265} m 760 ${height - 265} l S
-
-% Recognition Statement
-BT
-/F1 10 Tf
-0.75 0.8 0.9 rg
-330 ${height - 305} Td
-(In recognition of your dedication, hard work, and outstanding performance) Tj
-0 -15 Td
-(in completing the learning program at Devora. Your commitment to learn, build,) Tj
-0 -15 Td
-(and prove has shown great potential and made a positive impact in our community.) Tj
-ET
-
-% Program & Chapter Specifier
-BT
-/F2 13 Tf
-0.831 0.686 0.216 rg
-330 ${height - 370} Td
-(Program: ) Tj
-ET
-
-BT
-/F2 13 Tf
-1 1 1 rg
-390 ${height - 370} Td
-(${chapter}  [ ${pathway} ]) Tj
-ET
-
-% Bottom Section Dividers and Signatures
-0.831 0.686 0.216 RG
-1 w
-350 140 m 500 140 l S
-590 140 m 770 140 l S
-
-% Date Label
-BT
-/F1 9 Tf
-0.6 0.65 0.75 rg
-405 120 Td
-(DATE) Tj
-ET
-
-BT
-/F2 10 Tf
-1 1 1 rg
-380 150 Td
-(${dateStr}) Tj
-ET
-
-% QR Code Placeholder Box & Verification text
-0.831 0.686 0.216 RG
-1 w
-520 115 45 45 re S
-
-BT
-/F1 7 Tf
-0.7 0.75 0.85 rg
-515 98 Td
-(VERIFIED) Tj
-ET
-
-% Signature Label & Signatory
-BT
-/F2 16 Tf
-0.831 0.686 0.216 rg
-630 150 Td
-(Raffi dwi putra) Tj
-ET
-
-BT
-/F1 9 Tf
-0.6 0.65 0.75 rg
-650 120 Td
-(SIGNATURE) Tj
-ET
-
-% Certificate ID & Verification URL
-BT
-/F1 8 Tf
-0.5 0.55 0.65 rg
-350 65 Td
-(Certificate ID: ${certNum}   |   Verification: ${verifyUrl}) Tj
-ET
-
-Q
-`.trim();
-
-  const getByteLength = (str: string) => new TextEncoder().encode(str).length;
-  const streamLength = getByteLength(contentStream);
-
-  const pdfBody = `%PDF-1.4
-1 0 obj
-<<
-  /Type /Catalog
-  /Pages 2 0 R
->>
-endobj
-
-2 0 obj
-<<
-  /Type /Pages
-  /Kids [3 0 R]
-  /Count 1
->>
-endobj
-
-3 0 obj
-<<
-  /Type /Page
-  /Parent 2 0 R
-  /MediaBox [0 0 ${width} ${height}]
-  /Contents 4 0 R
-  /Resources <<
-    /Font <<
-      /F1 <<
-        /Type /Font
-        /Subtype /Type1
-        /BaseFont /Helvetica
-      >>
-      /F2 <<
-        /Type /Font
-        /Subtype /Type1
-        /BaseFont /Helvetica-Bold
-      >>
-    >>
-  >>
->>
-endobj
-
-4 0 obj
-<<
-  /Length ${streamLength}
->>
-stream
-${contentStream}
-endstream
-endobj
-`;
-
-  const lines = pdfBody.split('\n');
-  const offsets: number[] = [0];
-  let currentOffset = 0;
-
-  for (let i = 0; i < lines.length; i++) {
-    const line = lines[i];
-    if (line.match(/^\d+ 0 obj/)) {
-      offsets.push(currentOffset);
-    }
-    currentOffset += getByteLength(line) + 1; // +1 for \n
+  function pushObj(num: number, body: Uint8Array) {
+    offsets.push(currentPos);
+    const start = textEncoder.encode(num + ' 0 obj\n');
+    const end = textEncoder.encode('\nendobj\n');
+    currentPos += start.length + body.length + end.length;
+    chunks.push(start, body, end);
   }
 
-  const xrefOffset = getByteLength(pdfBody);
+  pushObj(1, textEncoder.encode('<< /Type /Catalog /Pages 2 0 R >>'));
+  pushObj(2, textEncoder.encode('<< /Type /Pages /Kids [3 0 R] /Count 1 >>'));
+  pushObj(
+    3,
+    textEncoder.encode(
+      '<< /Type /Page /Parent 2 0 R /MediaBox [0 0 ' +
+        width.toFixed(2) +
+        ' ' +
+        height.toFixed(2) +
+        '] /Contents 4 0 R /Resources << /Font << /F1 5 0 R /F2 6 0 R >> /XObject << /Img1 7 0 R >> >> >>'
+    )
+  );
 
-  let xref = `xref\n0 5\n0000000000 65535 f \n`;
-  for (let i = 1; i <= 4; i++) {
-    const off = offsets[i] || 0;
-    xref += off.toString().padStart(10, '0') + ' 00000 n \n';
+  const sStart = textEncoder.encode('<< /Length ' + textBuf.length + ' >>\nstream\n');
+  const sEnd = textEncoder.encode('\nendstream');
+  const streamBody = new Uint8Array(sStart.length + textBuf.length + sEnd.length);
+  streamBody.set(sStart, 0);
+  streamBody.set(textBuf, sStart.length);
+  streamBody.set(sEnd, sStart.length + textBuf.length);
+  pushObj(4, streamBody);
+
+  pushObj(5, textEncoder.encode('<< /Type /Font /Subtype /Type1 /BaseFont /Times-Bold >>'));
+  pushObj(6, textEncoder.encode('<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold >>'));
+
+  const imgHeader = textEncoder.encode(
+    '<< /Type /XObject /Subtype /Image /Width 1024 /Height 838 /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /DCTDecode /Length ' +
+      imgBytes.length +
+      ' >>\nstream\n'
+  );
+  const imgFooter = textEncoder.encode('\nendstream');
+  const imgObjBody = new Uint8Array(imgHeader.length + imgBytes.length + imgFooter.length);
+  imgObjBody.set(imgHeader, 0);
+  imgObjBody.set(imgBytes, imgHeader.length);
+  imgObjBody.set(imgFooter, imgHeader.length + imgBytes.length);
+  pushObj(7, imgObjBody);
+
+  const xrefPos = currentPos;
+  let xrefStr = 'xref\n0 8\n0000000000 65535 f \n';
+  for (const off of offsets) {
+    xrefStr += off.toString().padStart(10, '0') + ' 00000 n \n';
+  }
+  xrefStr += 'trailer\n<< /Size 8 /Root 1 0 R >>\nstartxref\n' + xrefPos + '\n%%EOF\n';
+  chunks.push(textEncoder.encode(xrefStr));
+
+  const totalLength = chunks.reduce((acc, chunk) => acc + chunk.length, 0);
+  const finalPdf = new Uint8Array(totalLength);
+  let writeOffset = 0;
+  for (const chunk of chunks) {
+    finalPdf.set(chunk, writeOffset);
+    writeOffset += chunk.length;
   }
 
-  const trailer = `trailer
-<<
-  /Size 5
-  /Root 1 0 R
->>
-startxref
-${xrefOffset}
-%%EOF
-`;
-
-  return pdfBody + xref + trailer;
+  return finalPdf;
 }
 
 /**
@@ -327,7 +202,7 @@ ${xrefOffset}
 export function downloadCertificateInBrowser(data: CertificateData): void {
   if (typeof window === 'undefined') return;
   const rawPdf = buildCertificatePdfRaw(data);
-  const blob = new Blob([rawPdf], { type: 'application/pdf' });
+  const blob = new Blob([rawPdf as any], { type: 'application/pdf' });
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
   a.href = url;
@@ -428,5 +303,5 @@ export function downloadCertificateImage(
 
 export function generateCertificatePdf(data: CertificateData): Buffer {
   const rawPdf = buildCertificatePdfRaw(data);
-  return Buffer.from(rawPdf, 'utf8');
+  return Buffer.from(rawPdf.buffer as ArrayBuffer);
 }
