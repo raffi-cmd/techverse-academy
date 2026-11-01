@@ -54,13 +54,13 @@ export default function CertificatePreview({
         className="w-full h-full object-cover pointer-events-none"
       />
 
-      {/* Layer Overlay Teks Dinamis dengan Posisi Terukur */}
+      {/* Layer Overlay Teks Dinamis dengan Posisi Terukur Presisi */}
       <div className="absolute inset-0 pointer-events-none">
         {/* 1. Recipient Name Area (Terletak tepat di antara label PROUDLY PRESENTED TO dan Garis Emas) */}
-        {/* Pada template 1024x838, label PROUDLY PRESENTED TO berada di y ~36%, garis emas di y ~49% */}
+        {/* Pada template 1024x838, label PROUDLY PRESENTED TO di y ~31-34%, garis emas di y ~46.5% */}
         <div
-          className="absolute left-[36%] right-[6%] flex items-center justify-center text-center px-4"
-          style={{ top: '38.5%', height: '9.5%' }}
+          className="absolute left-[33%] right-[5%] flex items-center justify-center text-center px-4"
+          style={{ top: '36%', height: '9.5%' }}
         >
           <span
             className={`font-serif font-bold text-white uppercase tracking-wider drop-shadow-md truncate ${getRecipientFontSize(
@@ -72,31 +72,31 @@ export default function CertificatePreview({
           </span>
         </div>
 
-        {/* 2. Program / Chapter Specifier (Di bawah paragraf apresiasi, di atas garis footer) */}
-        {/* Berada di y ~63% - 68% */}
+        {/* 2. Program / Chapter Specifier (Tepat di bawah paragraf apresiasi, di atas garis footer) */}
+        {/* Berada di rentang y ~57.5% - 63.5% */}
         <div
-          className="absolute left-[35%] right-[7%] flex items-center justify-center text-center px-2"
-          style={{ top: '63.5%', height: '5.5%' }}
+          className="absolute left-[33%] right-[5%] flex items-center justify-center text-center px-2"
+          style={{ top: '57.5%', height: '5.5%' }}
         >
-          <p className="text-[7px] sm:text-[9px] md:text-xs font-semibold text-cyan-300 drop-shadow line-clamp-1">
+          <p className="text-[7.5px] sm:text-[9.5px] md:text-xs font-semibold text-cyan-300 drop-shadow line-clamp-1">
             [ {cleanPathway} — {cleanChapter} ]
           </p>
         </div>
 
-        {/* 3. Issue Date (Tepat di atas garis horizontal dan label DATE di sisi kiri bawah) */}
-        {/* Kolom DATE berpusat di x ~47%, y ~76% - 80% */}
+        {/* 3. Issue Date (Tepat DI ATAS garis horizontal DATE pada kolom kiri bawah) */}
+        {/* Garis DATE di y ~74%, kata DATE di y ~76%. Teks tanggal diletakkan di y ~69% - 73.5% agar TIDAK menimpa garis atau kata DATE */}
         <div
           className="absolute flex items-center justify-center text-center"
-          style={{ left: '37%', width: '20%', top: '76%', height: '4%' }}
+          style={{ left: '36%', width: '17%', top: '69.5%', height: '4.2%' }}
         >
-          <span className="text-[7px] sm:text-[9px] md:text-xs font-mono font-bold text-gray-200 drop-shadow">
+          <span className="text-[7px] sm:text-[9px] md:text-xs font-mono font-bold text-gray-100 drop-shadow">
             {cleanDate}
           </span>
         </div>
 
         {/* 4. Certificate ID & Verification Stamp (Di dasar sertifikat) */}
         <div
-          className="absolute left-[35%] right-[6%] flex items-center justify-center text-center"
+          className="absolute left-[33%] right-[5%] flex items-center justify-center text-center"
           style={{ bottom: '2%', height: '3.5%' }}
         >
           <span className="text-[6px] sm:text-[7.5px] md:text-[9px] font-mono text-gray-400/90 tracking-wider">

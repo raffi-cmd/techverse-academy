@@ -363,40 +363,40 @@ export function downloadCertificateImage(
   img.crossOrigin = 'anonymous';
 
   const renderOverlays = () => {
-    // 1. Recipient Name: Bersih di area antara label PROUDLY PRESENTED TO dan garis emas
-    // Lebar template = 1600, Tinggi = 1309. Center x = 1136, y = 570 (proporsional 43.5%)
+    // 1. Recipient Name: Terletak rapi tepat di antara label PROUDLY PRESENTED TO dan garis emas
+    // Lebar canvas = 1600, Tinggi canvas = 1309. Sumbu tengah area teks kanan x = 1024, y = 535
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
     ctx.fillStyle = '#ffffff';
     const recipient = (data.recipientName || 'DEVORA LEARNER').trim().toUpperCase();
     
     // Ukuran font adaptif untuk nama panjang
-    let fontSize = 48;
-    if (recipient.length > 35) fontSize = 28;
-    else if (recipient.length > 25) fontSize = 34;
-    else if (recipient.length > 18) fontSize = 40;
+    let fontSize = 46;
+    if (recipient.length > 35) fontSize = 26;
+    else if (recipient.length > 25) fontSize = 32;
+    else if (recipient.length > 18) fontSize = 38;
     ctx.font = `bold ${fontSize}px "Times New Roman", Times, serif`;
-    ctx.fillText(recipient, 1136, 575);
+    ctx.fillText(recipient, 1024, 535);
 
-    // 2. Specific Chapter & Pathway: Di bawah paragraf pengakuan pada y = 860
+    // 2. Specific Chapter & Pathway: Tepat di bawah paragraf apresiasi pada y = 792
     ctx.fillStyle = '#38bdf8';
     ctx.font = 'bold 22px sans-serif';
     const courseText = `[ ${data.pathwayName} — ${data.chapterTitle} ]`;
-    ctx.fillText(courseText, 1136, 860);
+    ctx.fillText(courseText, 1024, 792);
 
-    // 3. Dynamic Date: Tepat di atas garis DATE pada kolom kiri bawah x = 750, y = 1030
+    // 3. Dynamic Date: Tepat DI ATAS garis horizontal DATE pada kolom kiri bawah (x = 712, y = 936)
     ctx.fillStyle = '#f8fafc';
-    ctx.font = 'bold 24px monospace';
+    ctx.font = 'bold 23px monospace';
     const issueDateStr = data.issueDate || new Date().toISOString().split('T')[0];
-    ctx.fillText(issueDateStr, 755, 1030);
+    ctx.fillText(issueDateStr, 712, 936);
 
     // 4. Certificate ID & Verification Info di dasar sertifikat
-    ctx.fillStyle = '#64748b';
+    ctx.fillStyle = '#94a3b8';
     ctx.font = 'bold 15px monospace';
     const idInfo = data.completionDate && data.completionDate !== issueDateStr
-      ? `CERTIFICATE ID: ${data.certificateNumber}  |  COMPLETED: ${data.completionDate}`
+      ? `CERTIFICATE ID: ${data.certificateNumber}  |  LULUS: ${data.completionDate}`
       : `CERTIFICATE ID: ${data.certificateNumber}`;
-    ctx.fillText(idInfo, 1136, 1275);
+    ctx.fillText(idInfo, 1024, 1263);
 
     // Trigger download
     const mime = format === 'png' ? 'image/png' : 'image/jpeg';

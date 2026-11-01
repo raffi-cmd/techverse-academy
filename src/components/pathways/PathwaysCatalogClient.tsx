@@ -74,8 +74,8 @@ export default function PathwaysCatalogClient({ initialCategories, initialPathwa
         </span>
       </div>
 
-      {/* Categories Bar */}
-      <div className="flex items-center gap-2 overflow-x-auto pb-4 mb-10 text-xs font-semibold scrollbar-thin">
+      {/* Categories Bar Responsif: Rapi tanpa bilah gulir kasar */}
+      <div className="flex items-center gap-2 overflow-x-auto no-scrollbar md:flex-wrap pb-3 mb-8 text-xs font-semibold">
         <button
           onClick={() => setSelectedCategory('all')}
           className={`px-4 py-2 rounded-full shrink-0 transition-colors ${
