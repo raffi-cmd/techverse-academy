@@ -399,11 +399,25 @@ export default function ChapterWorkspacePage({ initialData }: { initialData?: In
         localStorage.setItem('devora_user_name', recipientName);
       }
 
-      const prefix = isTrackMastery ? 'DEVORA-TRACK' : isCheckpoint ? 'DEVORA-CHK' : 'DEVORA-CERT';
-      const randomSuffix = Math.random().toString(36).substring(2, 7).toUpperCase();
-      const certNum = `${prefix}-${chapter.id.substring(0, 8).toUpperCase()}-${randomSuffix}`;
-      const issueDate = new Date().toISOString().split('T')[0];
-      const verificationUrl = `https://raffi-cmd.github.io/techverse-academy/verify/?cert=${certNum}`;
+      // Cek apakah sertifikat untuk bab ini sudah pernah diterbitkan agar nomor sertifikat dan riwayat tetap konsisten
+      let certNum = '';
+      let existingDate = '';
+      if (typeof window !== 'undefined') {
+        const storedCerts = JSON.parse(localStorage.getItem('devora_certificates') || '{}');
+        if (storedCerts[chapter.id]?.certificateNumber) {
+          certNum = storedCerts[chapter.id].certificateNumber;
+          existingDate = storedCerts[chapter.id].issueDate;
+        }
+      }
+
+      if (!certNum) {
+        const prefix = isTrackMastery ? 'DEVORA-TRACK' : isCheckpoint ? 'DEVORA-CHK' : 'DEVORA-CERT';
+        const randomSuffix = Math.random().toString(36).substring(2, 7).toUpperCase();
+        certNum = `${prefix}-${chapter.id.substring(0, 8).toUpperCase()}-${randomSuffix}`;
+      }
+
+      const issueDate = existingDate || new Date().toISOString().split('T')[0];
+      const verificationUrl = `https://raffi-cmd.github.io/techverse-academy/verify/?id=${certNum}`;
 
       const chapterTitle = lang === 'id' ? (chapter.title_id || chapter.title) : (chapter.title_en || chapter.title);
       const pathwayName = chapter.pathway_name;
@@ -728,6 +742,22 @@ export default function ChapterWorkspacePage({ initialData }: { initialData?: In
                 <div className="p-2.5 rounded-lg bg-emerald-500/10 border border-emerald-500/20 text-[11px] text-emerald-400">
                   {lang === 'id' ? `✓ Lulus dengan nilai ${quizResult.percentage}%! Siap klaim.` : `✓ Passed with ${quizResult.percentage}%! Ready to claim.`}
                 </div>
+
+                {/* Pratinjau langsung sertifikat sebelum klaim */}
+                <div className="border border-white/10 rounded-xl p-2 bg-[#050c1e]/60">
+                  <p className="text-[9px] font-mono text-gray-400 mb-1.5 uppercase">
+                    {lang === 'id' ? 'Pratinjau Sertifikat:' : 'Certificate Preview:'}
+                  </p>
+                  <CertificatePreview
+                    recipientName={certificateName || (lang === 'id' ? 'Nama Anda' : 'Your Name')}
+                    chapterTitle={lang === 'id' ? (chapter.title_id || chapter.title) : (chapter.title_en || chapter.title)}
+                    pathwayName={chapter.pathway_name}
+                    issueDate={new Date().toISOString().split('T')[0]}
+                    completionDate={quizResult?.timestamp ? new Date(quizResult.timestamp).toISOString().split('T')[0] : new Date().toISOString().split('T')[0]}
+                    certificateNumber="DEVORA-PREVIEW"
+                  />
+                </div>
+
                 <div>
                   <label className="block text-[10px] text-gray-400 uppercase mb-1">
                     {lang === 'id' ? 'Nama Lengkap pada Sertifikat' : 'Full Name on Certificate'}
@@ -736,7 +766,7 @@ export default function ChapterWorkspacePage({ initialData }: { initialData?: In
                     type="text"
                     value={certificateName}
                     onChange={(e) => setCertificateName(e.target.value)}
-                    placeholder={lang === 'id' ? 'Masukkan nama lengkap Anda' : 'Enter your full legal name'}
+                    placeholder={lang === 'id' ? 'Masukkan nama lengkap Anda (mis. Raffi Dwi Putra)' : 'Enter your full legal name'}
                     className="w-full bg-black/60 border border-white/20 rounded-lg px-3 py-1.5 text-xs text-white focus:outline-none focus:border-cyan-400 mb-2"
                   />
                   <button
@@ -747,7 +777,7 @@ export default function ChapterWorkspacePage({ initialData }: { initialData?: In
                     {claimingCert ? (
                       <Loader2 className="w-3.5 h-3.5 animate-spin" />
                     ) : (
-                      lang === 'id' ? 'Terbitkan Sertifikat (Gratis)' : 'Issue Certificate (Free)'
+                      lang === 'id' ? 'Terbitkan Sertifikat Resmi' : 'Issue Official Certificate'
                     )}
                   </button>
                   {certError && <p className="text-[10px] text-red-400 mt-1">{certError}</p>}

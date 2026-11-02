@@ -23,7 +23,7 @@ export default function CertificateVerificationPage() {
 
     if (typeof window !== 'undefined') {
       const urlParams = new URLSearchParams(window.location.search);
-      const queryCert = urlParams.get('cert');
+      const queryCert = urlParams.get('id') || urlParams.get('cert');
       if (queryCert) {
         setCertId(queryCert);
         verifyCertId(queryCert);
@@ -33,14 +33,14 @@ export default function CertificateVerificationPage() {
     return () => window.removeEventListener('devora_language_change', handleLangChange);
   }, []);
 
-  const verifyCertId = (idToVerify: string) => {
+  const verifyCertId = async (idToVerify: string) => {
     setLoading(true);
     setResult(null);
     setErrorMsg('');
 
     const cleanId = idToVerify.trim();
 
-    // 1. Check local storage certificates
+    // 1. Cek local storage browser (untuk sertifikat yang diterbitkan pengguna di browser ini)
     if (typeof window !== 'undefined') {
       try {
         const storedCerts = JSON.parse(localStorage.getItem('devora_certificates') || '{}');
@@ -48,6 +48,7 @@ export default function CertificateVerificationPage() {
         if (match) {
           setResult({
             result: 'valid',
+            status: 'valid',
             certificate: match
           });
           setLoading(false);
@@ -56,7 +57,38 @@ export default function CertificateVerificationPage() {
       } catch {}
     }
 
-    // 2. Daftar sertifikat terdaftar / contoh resmi DEVORA
+    // 2. Fetch basis data sertifikat publik resmi DEVORA (certificates.json)
+    try {
+      const response = await fetch('/techverse-academy/data/certificates.json');
+      if (response.ok) {
+        const publishedCerts: any[] = await response.json();
+        const found = publishedCerts.find(
+          (c) => (c.certificate_number || '').toUpperCase() === cleanId.toUpperCase()
+        );
+
+        if (found) {
+          const isRevoked = found.status === 'revoked';
+          setResult({
+            result: isRevoked ? 'revoked' : 'valid',
+            status: found.status || 'valid',
+            revokedAt: found.revoked_at,
+            revokedReason: found.revoked_reason,
+            certificate: {
+              certificateNumber: found.certificate_number,
+              recipientName: found.recipient_name,
+              chapterTitle: found.chapter_title,
+              pathwayName: found.pathway_name,
+              issueDate: found.issue_date?.split(' ')[0] || found.issue_date,
+              verificationUrl: `https://raffi-cmd.github.io/techverse-academy/verify/?id=${found.certificate_number}`
+            }
+          });
+          setLoading(false);
+          return;
+        }
+      }
+    } catch {}
+
+    // 3. Fallback basis data sertifikat resmi terdaftar
     const officialRegisteredCertificates: Record<string, any> = {
       'DEVORA-2026-ALPHA-01': {
         certificateNumber: 'DEVORA-2026-ALPHA-01',
@@ -64,7 +96,7 @@ export default function CertificateVerificationPage() {
         chapterTitle: 'Pengantar Keamanan Siber & Fondasi Pertahanan',
         pathwayName: 'Cybersecurity Fundamentals',
         issueDate: '2026-10-30',
-        verificationUrl: 'https://raffi-cmd.github.io/techverse-academy/verify/?cert=DEVORA-2026-ALPHA-01'
+        verificationUrl: 'https://raffi-cmd.github.io/techverse-academy/verify/?id=DEVORA-2026-ALPHA-01'
       },
       'DEVORA-2026-SAMPLE-01': {
         certificateNumber: 'DEVORA-2026-SAMPLE-01',
@@ -72,13 +104,14 @@ export default function CertificateVerificationPage() {
         chapterTitle: 'Arsitektur Komputasi & Rekayasa Backend',
         pathwayName: 'Backend Development',
         issueDate: '2026-10-31',
-        verificationUrl: 'https://raffi-cmd.github.io/techverse-academy/verify/?cert=DEVORA-2026-SAMPLE-01'
+        verificationUrl: 'https://raffi-cmd.github.io/techverse-academy/verify/?id=DEVORA-2026-SAMPLE-01'
       }
     };
 
     if (officialRegisteredCertificates[cleanId.toUpperCase()]) {
       setResult({
         result: 'valid',
+        status: 'valid',
         certificate: officialRegisteredCertificates[cleanId.toUpperCase()]
       });
       setLoading(false);
@@ -87,8 +120,8 @@ export default function CertificateVerificationPage() {
 
     setErrorMsg(
       lang === 'id'
-        ? `Tidak ditemukan catatan sertifikat dengan nomor identifikasi: ${cleanId}. Pastikan nomor sertifikat yang Anda masukkan sudah benar.`
-        : `No certificate record found with identifier: ${cleanId}. Please check the certificate number and try again.`
+        ? `Tidak ditemukan catatan sertifikat resmi dengan nomor identifikasi: ${cleanId}. Pastikan nomor sertifikat yang Anda masukkan sudah benar.`
+        : `No official certificate record found with identifier: ${cleanId}. Please check the certificate number and try again.`
     );
     setLoading(false);
   };
@@ -153,23 +186,49 @@ export default function CertificateVerificationPage() {
           </div>
         )}
 
-        {/* Valid Certificate Display */}
-        {result?.result === 'valid' && result.certificate && (
-          <div className="neo-card p-8 bg-[#0a0d17] border-yellow-500/30 shadow-2xl relative overflow-hidden">
+        {/* Status Display: VALID or REVOKED */}
+        {result?.result && result.certificate && (
+          <div className={`neo-card p-8 bg-[#0a0d17] shadow-2xl relative overflow-hidden ${
+            result.result === 'revoked' ? 'border-red-500/50' : 'border-yellow-500/30'
+          }`}>
             <div className="flex items-center justify-between border-b border-white/10 pb-6 mb-6">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400">
-                  <CheckCircle className="w-5 h-5" />
+                <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
+                  result.result === 'revoked'
+                    ? 'bg-red-500/10 border border-red-500/30 text-red-400'
+                    : 'bg-emerald-500/10 border border-emerald-500/30 text-emerald-400'
+                }`}>
+                  {result.result === 'revoked' ? (
+                    <XCircle className="w-5 h-5" />
+                  ) : (
+                    <CheckCircle className="w-5 h-5" />
+                  )}
                 </div>
                 <div>
-                  <h3 className="font-bold text-base text-white">Authentic Credential Verified</h3>
+                  <h3 className="font-bold text-base text-white">
+                    {result.result === 'revoked' ? 'Sertifikat Telah Dicabut (REVOKED)' : 'Authentic Credential Verified'}
+                  </h3>
                   <p className="text-[11px] text-gray-400">Authoritative record from DEVORA Registry</p>
                 </div>
               </div>
-              <span className="text-xs font-mono text-yellow-400 font-bold bg-yellow-500/10 px-3 py-1 rounded-full border border-yellow-500/20">
-                STATUS: VALID
+              <span className={`text-xs font-mono font-bold px-3 py-1 rounded-full border ${
+                result.result === 'revoked'
+                  ? 'text-red-400 bg-red-500/10 border-red-500/30'
+                  : 'text-yellow-400 bg-yellow-500/10 border-yellow-500/20'
+              }`}>
+                STATUS: {result.result.toUpperCase()}
               </span>
             </div>
+
+            {result.result === 'revoked' && (
+              <div className="mb-6 p-4 rounded-xl bg-red-500/10 border border-red-500/20 text-red-300 text-xs">
+                <p className="font-bold mb-1">Pemberitahuan Pencabutan:</p>
+                <p>Sertifikat ini telah dicabut secara resmi oleh Dewan Akademik DEVORA pada {result.revokedAt || '-'}.</p>
+                {result.revokedReason && (
+                  <p className="mt-1 text-gray-400">Alasan: {result.revokedReason}</p>
+                )}
+              </div>
+            )}
 
             {/* Visual Certificate Template Preview Terukur & Bebas Tumpang Tindih */}
             <CertificatePreview

@@ -39,6 +39,51 @@ try {
   );
 
   console.log(`Generated pathways.json with ${pathways.length} entries`);
+
+  // Ekspor sertifikat resmi DEVORA ke certificates.json untuk verifikasi statis publik di GitHub Pages
+  const certs = db.prepare(`
+    SELECT certificate_number, recipient_name, chapter_title, pathway_name, issue_date, status, revoked_at, revoked_reason
+    FROM certificates
+    ORDER BY created_at DESC
+  `).all();
+
+  // Tambahkan juga sertifikat sampel resmi DEVORA jika belum ada
+  const officialSamples = [
+    {
+      certificate_number: 'DEVORA-2026-ALPHA-01',
+      recipient_name: 'Raffi Dwi Putra',
+      chapter_title: 'Pengantar Keamanan Siber & Fondasi Pertahanan',
+      pathway_name: 'Cybersecurity Fundamentals',
+      issue_date: '2026-10-30',
+      status: 'valid',
+      revoked_at: null,
+      revoked_reason: null
+    },
+    {
+      certificate_number: 'DEVORA-2026-SAMPLE-01',
+      recipient_name: 'DEVORA Verified Graduate',
+      chapter_title: 'Arsitektur Komputasi & Rekayasa Backend',
+      pathway_name: 'Backend Development',
+      issue_date: '2026-10-31',
+      status: 'valid',
+      revoked_at: null,
+      revoked_reason: null
+    }
+  ];
+
+  const mergedCerts = [...certs];
+  for (const sample of officialSamples) {
+    if (!mergedCerts.some(c => c.certificate_number === sample.certificate_number)) {
+      mergedCerts.push(sample);
+    }
+  }
+
+  fs.writeFileSync(
+    path.join(outputDir, 'certificates.json'),
+    JSON.stringify(mergedCerts, null, 2)
+  );
+  console.log(`Generated certificates.json with ${mergedCerts.length} entries`);
+
   db.close();
 } catch (err) {
   console.warn('Warning: Could not generate static data from database:', err.message);

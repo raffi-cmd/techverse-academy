@@ -31,17 +31,17 @@ export default function CertificatePreview({
   verificationUrl,
   className = ''
 }: CertificatePreviewProps) {
-  const cleanRecipient = (recipientName || 'DEVORA LEARNER').trim().toUpperCase();
+  const cleanRecipient = (recipientName || 'Devora Learner').trim();
   const cleanChapter = chapterTitle || 'Curriculum Chapter';
   const cleanPathway = pathwayName || 'Learning Pathway';
   const cleanDate = issueDate || new Date().toISOString().split('T')[0];
 
-  // Penyesuaian ukuran font dinamis untuk nama panjang
+  // Penyesuaian ukuran font dinamis untuk nama kaligrafi
   const getRecipientFontSize = (len: number) => {
-    if (len > 35) return 'text-[9px] sm:text-[11px] md:text-sm lg:text-base';
-    if (len > 25) return 'text-[11px] sm:text-xs md:text-base lg:text-lg';
-    if (len > 18) return 'text-xs sm:text-sm md:text-lg lg:text-xl';
-    return 'text-sm sm:text-base md:text-xl lg:text-2xl';
+    if (len > 35) return 'text-sm sm:text-base md:text-xl lg:text-2xl';
+    if (len > 25) return 'text-base sm:text-lg md:text-2xl lg:text-3xl';
+    if (len > 18) return 'text-lg sm:text-xl md:text-3xl lg:text-4xl';
+    return 'text-xl sm:text-2xl md:text-4xl lg:text-5xl';
   };
 
   return (
@@ -56,15 +56,21 @@ export default function CertificatePreview({
       {/* Layer Overlay Teks Dinamis dengan Posisi Terukur Presisi */}
       <div className="absolute inset-0 pointer-events-none">
         {/* 1. Recipient Name Area (Terletak tepat di antara label PROUDLY PRESENTED TO dan Garis Emas) */}
-        {/* Pada template 1024x838, label PROUDLY PRESENTED TO di y ~31-34%, garis emas di y ~46.5% */}
+        {/* Font kaligrafi warna emas mewah sesuai gambar referensi pengguna */}
         <div
           className="absolute left-[33%] right-[5%] flex items-center justify-center text-center px-4"
-          style={{ top: '36%', height: '9.5%' }}
+          style={{ top: '35.5%', height: '11.5%' }}
         >
           <span
-            className={`font-serif font-bold text-white uppercase tracking-wider drop-shadow-md truncate ${getRecipientFontSize(
+            className={`font-calligraphy text-amber-200 tracking-wide drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)] truncate ${getRecipientFontSize(
               cleanRecipient.length
             )}`}
+            style={{
+              background: 'linear-gradient(135deg, #fef08a 0%, #facc15 50%, #eab308 100%)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              filter: 'drop-shadow(0 2px 5px rgba(0,0,0,0.75))'
+            }}
             title={cleanRecipient}
           >
             {cleanRecipient}

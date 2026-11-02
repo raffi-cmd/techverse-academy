@@ -32,6 +32,7 @@
   /* Typography Scale */
   --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+  --font-calligraphy: var(--font-calligraphy, 'Great Vibes', cursive);
 }
 
 body {
@@ -56,6 +57,10 @@ body {
   font-style: italic;
   font-weight: 400;
   letter-spacing: 0.02em;
+}
+
+.font-calligraphy {
+  font-family: var(--font-calligraphy), 'Great Vibes', cursive, 'Brush Script MT';
 }
 
 /* Diagonal Polygon Divider */

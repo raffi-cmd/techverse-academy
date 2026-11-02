@@ -1,0 +1,82 @@
+[
+  {
+    "certificate_number": "TV-2024-TEST-VERIFY-1",
+    "recipient_name": "Jordan Test",
+    "chapter_title": "Orientation & Foundations",
+    "pathway_name": "Computer and IT Fundamentals",
+    "issue_date": "2026-11-02 01:25:03",
+    "status": "revoked",
+    "revoked_at": "2026-11-02 01:25:03",
+    "revoked_reason": "Academic audit"
+  },
+  {
+    "certificate_number": "TV-2026-2BB3F9-E1B73A",
+    "recipient_name": "Alex Candidate",
+    "chapter_title": "Computer and IT Fundamentals: Chapter 1 - Orientation & Foundations (Part 1)",
+    "pathway_name": "Computer and IT Fundamentals",
+    "issue_date": "2026-10-24 23:57:08",
+    "status": "revoked",
+    "revoked_at": "2026-10-24 23:57:08",
+    "revoked_reason": "QA Audit Revocation Verification Test"
+  },
+  {
+    "certificate_number": "TV-2026-6971B5-3D60A8",
+    "recipient_name": "Alex Candidate",
+    "chapter_title": "Computer and IT Fundamentals: Chapter 1 - Orientation & Foundations (Part 1)",
+    "pathway_name": "Computer and IT Fundamentals",
+    "issue_date": "2026-10-24 23:56:52",
+    "status": "revoked",
+    "revoked_at": "2026-10-24 23:56:52",
+    "revoked_reason": "QA Audit Revocation Verification Test"
+  },
+  {
+    "certificate_number": "TV-2026-C33089-801C83",
+    "recipient_name": "Alex Candidate",
+    "chapter_title": "Computer and IT Fundamentals: Chapter 1 - Orientation & Foundations (Part 1)",
+    "pathway_name": "Computer and IT Fundamentals",
+    "issue_date": "2026-10-24 23:55:51",
+    "status": "valid",
+    "revoked_at": null,
+    "revoked_reason": null
+  },
+  {
+    "certificate_number": "TV-2026-595776-AAE486",
+    "recipient_name": "Alex Candidate",
+    "chapter_title": "Computer and IT Fundamentals: Chapter 1 - Orientation & Foundations (Part 1)",
+    "pathway_name": "Computer and IT Fundamentals",
+    "issue_date": "2026-10-24 23:54:53",
+    "status": "valid",
+    "revoked_at": null,
+    "revoked_reason": null
+  },
+  {
+    "certificate_number": "TV-2026-91E85D-4909C3",
+    "recipient_name": "Alex Candidate",
+    "chapter_title": "Computer and IT Fundamentals: Chapter 1 - Orientation & Foundations (Part 1)",
+    "pathway_name": "Computer and IT Fundamentals",
+    "issue_date": "2026-10-24 23:54:34",
+    "status": "valid",
+    "revoked_at": null,
+    "revoked_reason": null
+  },
+  {
+    "certificate_number": "DEVORA-2026-ALPHA-01",
+    "recipient_name": "Raffi Dwi Putra",
+    "chapter_title": "Pengantar Keamanan Siber & Fondasi Pertahanan",
+    "pathway_name": "Cybersecurity Fundamentals",
+    "issue_date": "2026-10-30",
+    "status": "valid",
+    "revoked_at": null,
+    "revoked_reason": null
+  },
+  {
+    "certificate_number": "DEVORA-2026-SAMPLE-01",
+    "recipient_name": "DEVORA Verified Graduate",
+    "chapter_title": "Arsitektur Komputasi & Rekayasa Backend",
+    "pathway_name": "Backend Development",
+    "issue_date": "2026-10-31",
+    "status": "valid",
+    "revoked_at": null,
+    "revoked_reason": null
+  }
+]

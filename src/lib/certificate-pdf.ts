@@ -1,4 +1,5 @@
 import certTemplateJson from './certificate-template-base64.json' with { type: 'json' };
+import { generateQrPdfVectorOps, generateQrDataUrl } from './certificate-qr.ts';
 const CERTIFICATE_TEMPLATE_BASE64 = certTemplateJson.base64;
 
 export type CertificateType = 'CHAPTER_COMPLETION' | 'CHECKPOINT_EVALUATION' | 'TRACK_MASTERY';
@@ -65,32 +66,37 @@ export function buildCertificatePdfRaw(data: CertificateData): Uint8Array {
       .replace(/\)/g, '\\)');
   };
 
-  const recipient = escapePdf((data.recipientName || 'DEVORA LEARNER').toUpperCase());
+  const recipient = escapePdf((data.recipientName || 'Devora Learner').trim());
   const chapter = escapePdf(data.chapterTitle || 'Curriculum Chapter');
   const pathway = escapePdf(data.pathwayName || 'Learning Pathway');
   const certNum = escapePdf(data.certificateNumber || 'DEVORA-CERT');
   const dateStr = escapePdf(data.issueDate || new Date().toISOString().split('T')[0]);
   const completionDate = data.completionDate ? escapePdf(data.completionDate) : null;
+  const verifyUrl = data.verificationUrl || `https://raffi-cmd.github.io/techverse-academy/verify/?id=${certNum}`;
 
-  let nameFontSize = 26;
-  if (recipient.length > 35) nameFontSize = 16;
-  else if (recipient.length > 25) nameFontSize = 20;
-  else if (recipient.length > 18) nameFontSize = 23;
+  let nameFontSize = 30;
+  if (recipient.length > 35) nameFontSize = 18;
+  else if (recipient.length > 25) nameFontSize = 22;
+  else if (recipient.length > 18) nameFontSize = 26;
 
-  const estWidth = recipient.length * (nameFontSize * 0.52);
-  const nameX = Math.max(340, Math.round(538 - estWidth / 2));
+  const estWidth = recipient.length * (nameFontSize * 0.46);
+  const nameX = Math.max(340, Math.round(525 - estWidth / 2));
 
   const courseText = '[ ' + pathway + ' - ' + chapter + ' ]';
-  const estCourseWidth = courseText.length * (10.5 * 0.48);
-  const courseX = Math.max(330, Math.round(538 - estCourseWidth / 2));
+  const estCourseWidth = courseText.length * (10 * 0.48);
+  const courseX = Math.max(330, Math.round(525 - estCourseWidth / 2));
 
-  const dateX = 372;
+  const dateX = 368;
 
   const idText = completionDate && completionDate !== dateStr
     ? 'CERTIFICATE ID: ' + certNum + '   |   LULUS: ' + completionDate
     : 'CERTIFICATE ID: ' + certNum;
   const estIdWidth = idText.length * (8 * 0.48);
-  const idX = Math.max(330, Math.round(538 - estIdWidth / 2));
+  const idX = Math.max(330, Math.round(525 - estIdWidth / 2));
+
+  // Operasi vektor QR Code scannable: diposisikan persis di atas kotak putih QR template
+  // Pada PDF 841.89 x 595.28, koordinat QR: X = 489, Y = 104, Size = 53
+  const qrVectorOps = generateQrPdfVectorOps(verifyUrl, 489, 104, 53, 1);
 
   const textStream =
     '% Brand: DEVORA - CERTIFICATE OF ACHIEVEMENT\n' +
@@ -98,24 +104,30 @@ export function buildCertificatePdfRaw(data: CertificateData): Uint8Array {
     width.toFixed(2) + ' 0 0 ' + height.toFixed(2) + ' 0 0 cm\n' +
     '/Img1 Do\n' +
     'Q\n' +
+    // Vector QR Code Scannable
+    qrVectorOps +
+    // Recipient Name in Rich Gold Styling
     'BT\n' +
     '/F1 ' + nameFontSize + ' Tf\n' +
-    '1 1 1 rg\n' +
-    nameX + ' 352 Td\n' +
+    '0.96 0.82 0.32 rg\n' +
+    nameX + ' 342 Td\n' +
     '(' + recipient + ') Tj\n' +
     'ET\n' +
+    // Chapter / Pathway Specifier
     'BT\n' +
-    '/F2 10.5 Tf\n' +
+    '/F2 10 Tf\n' +
     '0.22 0.74 0.97 rg\n' +
     courseX + ' 248 Td\n' +
     '(' + courseText + ') Tj\n' +
     'ET\n' +
+    // Issue Date in Clean Off-White
     'BT\n' +
-    '/F2 11 Tf\n' +
+    '/F2 10.5 Tf\n' +
     '0.96 0.98 1 rg\n' +
     dateX + ' 168 Td\n' +
     '(' + dateStr + ') Tj\n' +
     'ET\n' +
+    // Certificate ID & Verification Stamp at bottom
     'BT\n' +
     '/F2 8 Tf\n' +
     '0.6 0.65 0.75 rg\n' +
@@ -220,52 +232,91 @@ export function downloadCertificateInBrowser(data: CertificateData): void {
  * CERTIFICATE OF ACHIEVEMENT title, PROUDLY PRESENTED TO, Recipient name,
  * dynamic description, Date, QR code, and Raffi dwi putra signature.
  */
-export function downloadCertificateImage(
+export async function downloadCertificateImage(
   data: CertificateData,
   format: 'png' | 'jpeg' | 'jpg' = 'png'
-): void {
+): Promise<void> {
   if (typeof window === 'undefined') return;
 
   const canvas = document.createElement('canvas');
   const width = 1600;
-  const height = 1309; // exact aspect ratio of 1024 x 838 template
+  const height = 1309; // rasio persis template 1024 x 838
   canvas.width = width;
   canvas.height = height;
   const ctx = canvas.getContext('2d');
   if (!ctx) return;
 
+  const verifyUrl = data.verificationUrl || `https://raffi-cmd.github.io/techverse-academy/verify/?id=${data.certificateNumber}`;
+  const qrDataUrl = await generateQrDataUrl(verifyUrl, 256);
+
   const img = new Image();
   img.crossOrigin = 'anonymous';
 
   const renderOverlays = () => {
-    // 1. Recipient Name: Terletak rapi tepat di antara label PROUDLY PRESENTED TO dan garis emas
-    // Lebar canvas = 1600, Tinggi canvas = 1309. Sumbu tengah area teks kanan x = 1024, y = 535
+    // 1. Gambar QR Code scannable dinamis di atas kotak QR template
+    // Template 1024x838: X: 595 - 659, Y: 647 - 711
+    // Canvas 1600x1309: X = 595 * (1600/1024) = 930, Y = 647 * (1309/838) = 1010, Size = 100
+    if (qrDataUrl) {
+      const qrImg = new Image();
+      qrImg.onload = () => {
+        ctx.drawImage(qrImg, 930, 1010, 100, 100);
+        finishDownload();
+      };
+      qrImg.onerror = () => finishDownload();
+      qrImg.src = qrDataUrl;
+    } else {
+      finishDownload();
+    }
+  };
+
+  const finishDownload = () => {
+    // 2. Recipient Name: Terletak di antara PROUDLY PRESENTED TO dan garis emas
+    // Menggunakan font kaligrafi dan warna gradasi emas sesuai gambar referensi pengguna
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
-    ctx.fillStyle = '#ffffff';
-    const recipient = (data.recipientName || 'DEVORA LEARNER').trim().toUpperCase();
-    
-    // Ukuran font adaptif untuk nama panjang
-    let fontSize = 46;
-    if (recipient.length > 35) fontSize = 26;
-    else if (recipient.length > 25) fontSize = 32;
-    else if (recipient.length > 18) fontSize = 38;
-    ctx.font = `bold ${fontSize}px "Times New Roman", Times, serif`;
-    ctx.fillText(recipient, 1024, 535);
+    const recipient = (data.recipientName || 'Devora Learner').trim();
 
-    // 2. Specific Chapter & Pathway: Tepat di bawah paragraf apresiasi pada y = 792
+    // Ukuran font adaptif untuk kaligrafi
+    let fontSize = 56;
+    if (recipient.length > 35) fontSize = 34;
+    else if (recipient.length > 25) fontSize = 42;
+    else if (recipient.length > 18) fontSize = 48;
+
+    ctx.font = `${fontSize}px "Great Vibes", "Brush Script MT", "Times New Roman", cursive`;
+    
+    // Efek bayangan halus
+    ctx.shadowColor = 'rgba(0, 0, 0, 0.75)';
+    ctx.shadowBlur = 6;
+    ctx.shadowOffsetX = 0;
+    ctx.shadowOffsetY = 3;
+
+    // Warna emas mewah sesuai referensi
+    const grad = ctx.createLinearGradient(800, 500, 1200, 560);
+    grad.addColorStop(0, '#fef08a');
+    grad.addColorStop(0.5, '#facc15');
+    grad.addColorStop(1, '#eab308');
+    ctx.fillStyle = grad;
+    ctx.fillText(recipient, 1024, 532);
+
+    // Reset shadow
+    ctx.shadowColor = 'transparent';
+    ctx.shadowBlur = 0;
+    ctx.shadowOffsetX = 0;
+    ctx.shadowOffsetY = 0;
+
+    // 3. Program & Bab
     ctx.fillStyle = '#38bdf8';
     ctx.font = 'bold 22px sans-serif';
     const courseText = `[ ${data.pathwayName} — ${data.chapterTitle} ]`;
     ctx.fillText(courseText, 1024, 792);
 
-    // 3. Dynamic Date: Tepat DI ATAS garis horizontal DATE pada kolom kiri bawah (x = 712, y = 936)
+    // 4. Tanggal Terbit di atas garis DATE
     ctx.fillStyle = '#f8fafc';
     ctx.font = 'bold 23px monospace';
     const issueDateStr = data.issueDate || new Date().toISOString().split('T')[0];
     ctx.fillText(issueDateStr, 712, 936);
 
-    // 4. Certificate ID & Verification Info di dasar sertifikat
+    // 5. Certificate ID di dasar sertifikat
     ctx.fillStyle = '#94a3b8';
     ctx.font = 'bold 15px monospace';
     const idInfo = data.completionDate && data.completionDate !== issueDateStr
@@ -292,7 +343,6 @@ export function downloadCertificateImage(
   };
 
   img.onerror = () => {
-    // Fallback if background image fails
     ctx.fillStyle = '#050c1e';
     ctx.fillRect(0, 0, width, height);
     renderOverlays();
